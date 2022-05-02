@@ -1,13 +1,13 @@
-package com.utn.clase3.adapters
+package com.utn.nerdypedia.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.utn.clase3.entities.Scientist
+import com.utn.nerdypedia.entities.Scientist
 import android.view.View
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import com.utn.clase3.R
+import com.utn.nerdypedia.R
 
 class ScientistAdapter (var scientistList: MutableList<Scientist>,
                         var onClick : (Int) -> Unit

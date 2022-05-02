@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navgraph"
+    app:startDestination="@id/mainFragment">
+
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.utn.nerdypedia.activities.LoginActivity"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" />
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.utn.nerdypedia.fragments.MainFragment"
+        android:label="main_fragment"
+        tools:layout="@layout/main_fragment" >
+        <action
+            android:id="@+id/action_mainFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_addFragment"
+            app:destination="@id/addFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.utn.nerdypedia.fragments.DetailsFragment"
+        android:label="details_fragment"
+        tools:layout="@layout/details_fragment" >
+        <argument
+            android:name="selectedItem"
+            app:argType="com.utn.nerdypedia.entities.Scientist" />
+    </fragment>
+    <fragment
+        android:id="@+id/addFragment"
+        android:name="com.utn.nerdypedia.fragments.AddFragment"
+        android:label="add_fragment"
+        tools:layout="@layout/add_fragment" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.utn.nerdypedia.fragments.ProfileFragment"
+        android:label="profile_fragment"
+        tools:layout="@layout/profile_fragment" />
+</navigation>

@@ -1,4 +1,4 @@
-package com.utn.clase3.entities
+package com.utn.nerdypedia.entities
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

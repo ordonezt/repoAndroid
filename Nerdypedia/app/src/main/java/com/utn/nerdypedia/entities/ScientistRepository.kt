@@ -1,4 +1,4 @@
-package com.utn.clase3.entities
+package com.utn.nerdypedia.entities
 
 class ScientistRepository {
     var scientistList : MutableList<Scientist> = mutableListOf()

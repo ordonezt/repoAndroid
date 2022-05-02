@@ -1,4 +1,4 @@
-package com.utn.clase3.fragments
+package com.utn.nerdypedia.fragments
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -7,21 +7,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.utn.clase3.R
-import com.utn.clase3.adapters.ScientistAdapter
-import com.utn.clase3.entities.ScientistRepository
-import com.utn.clase3.viewmodels.WelcomeViewModel
+import com.utn.nerdypedia.R
+import com.utn.nerdypedia.adapters.ScientistAdapter
+import com.utn.nerdypedia.entities.ScientistRepository
+import com.utn.nerdypedia.viewmodels.MainViewModel
 
-class welcomeFragment : Fragment() {
+class MainFragment : Fragment() {
 
     companion object {
-        fun newInstance() = welcomeFragment()
+        fun newInstance() = MainFragment()
     }
 
-    private lateinit var viewModel: WelcomeViewModel
+    private lateinit var viewModel: MainViewModel
+
     private lateinit var nameTextView: TextView
     private lateinit var recyclerScientists : RecyclerView
 
@@ -34,7 +36,7 @@ class welcomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        v = inflater.inflate(R.layout.welcome_fragment, container, false)
+        v = inflater.inflate(R.layout.main_fragment, container, false)
 
         nameTextView = v.findViewById(R.id.nameTextView)
         recyclerScientists = v.findViewById(R.id.recyclerScientists)
@@ -48,19 +50,20 @@ class welcomeFragment : Fragment() {
         recyclerScientists.layoutManager = LinearLayoutManager(context)
 
         scientistAdapter = ScientistAdapter(repository.scientistList) { position ->
-            val action = welcomeFragmentDirections.actionWelcomeFragmentToScientistDescription(repository.scientistList[position])
+            val action = MainFragmentDirections.actionMainFragmentToDetailsFragment(repository.scientistList[position])
             v.findNavController().navigate(action)
         }
 
         recyclerScientists.adapter = scientistAdapter
 
-        val user = welcomeFragmentArgs.fromBundle(requireArguments()).logedUsr
+        //val user = mainFragmentArgs.fromBundle(requireArguments()).logedUsr
 
-        nameTextView.text = user.name + '!'
+        nameTextView.text = "user.name"// + '!'
     }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(WelcomeViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         // TODO: Use the ViewModel
     }
 
