@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group
+        android:id="@+id/grp_1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/mainFragment"
+            android:title="mainFragment" />
+        <item
+            android:id="@+id/profileFragment"
+            android:title="profileFragment" />
+        <item
+            android:id="@+id/test"
+            android:title="noNav" />
+
+    </group>
+</menu>
