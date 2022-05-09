@@ -4,9 +4,9 @@ class ScientistRepository {
     var scientistList : MutableList<Scientist> = mutableListOf()
 
     init{
-        scientistList.add(Scientist("Albert Einstein","https://en.wikipedia.org/wiki/Albert_Einstein","German", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Einstein_1921_by_F_Schmutzer_-_restoration.jpg/800px-Einstein_1921_by_F_Schmutzer_-_restoration.jpg"))
-        scientistList.add(Scientist("Stephen Hawking","https://en.wikipedia.org/wiki/Stephen_Hawking","English", "https://upload.wikimedia.org/wikipedia/commons/e/eb/Stephen_Hawking.StarChild.jpg"))
-        scientistList.add(Scientist("James Clerk Maxwell","https://en.wikipedia.org/wiki/James_Clerk_Maxwell","Scottish", "https://upload.wikimedia.org/wikipedia/commons/5/57/James_Clerk_Maxwell.png"))
+        scientistList.add(Scientist( "Albert Einstein","https://en.wikipedia.org/wiki/Albert_Einstein","German", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Einstein_1921_by_F_Schmutzer_-_restoration.jpg/800px-Einstein_1921_by_F_Schmutzer_-_restoration.jpg"))
+        scientistList.add(Scientist( "Stephen Hawking","https://en.wikipedia.org/wiki/Stephen_Hawking","English", "https://upload.wikimedia.org/wikipedia/commons/e/eb/Stephen_Hawking.StarChild.jpg"))
+        scientistList.add(Scientist( "James Clerk Maxwell","https://en.wikipedia.org/wiki/James_Clerk_Maxwell","Scottish", "https://upload.wikimedia.org/wikipedia/commons/5/57/James_Clerk_Maxwell.png"))
         scientistList.add(Scientist("Marie Curie","https://en.wikipedia.org/wiki/Marie_Curie","Polish", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Marie_Curie_c._1920s.jpg/800px-Marie_Curie_c._1920s.jpg"))
         scientistList.add(Scientist("Paul Dirac","https://en.wikipedia.org/wiki/Paul_Dirac","British", "https://upload.wikimedia.org/wikipedia/commons/5/50/Paul_Dirac%2C_1933.jpg"))
         scientistList.add(Scientist("Carl Friedrich Gauss","https://en.wikipedia.org/wiki/Carl_Friedrich_Gauss","German", "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Carl_Friedrich_Gauss_1840_by_Jensen.jpg/800px-Carl_Friedrich_Gauss_1840_by_Jensen.jpg"))

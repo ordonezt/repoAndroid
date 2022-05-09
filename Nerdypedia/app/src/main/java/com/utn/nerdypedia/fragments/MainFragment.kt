@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.utn.nerdypedia.R
 import com.utn.nerdypedia.adapters.ScientistAdapter
+import com.utn.nerdypedia.database.scientistDao
+import com.utn.nerdypedia.database.scientistsDataBase
+import com.utn.nerdypedia.entities.Scientist
 import com.utn.nerdypedia.entities.ScientistRepository
 import com.utn.nerdypedia.viewmodels.MainViewModel
 
@@ -29,6 +31,8 @@ class MainFragment : Fragment() {
 
     private lateinit var scientistAdapter : ScientistAdapter
     private var repository : ScientistRepository = ScientistRepository()
+    private var db : scientistsDataBase? = null
+    private var scientistDao : scientistDao? = null
 
     private lateinit var v: View
 
@@ -49,16 +53,35 @@ class MainFragment : Fragment() {
         recyclerScientists.setHasFixedSize(true)
         recyclerScientists.layoutManager = LinearLayoutManager(context)
 
-        scientistAdapter = ScientistAdapter(repository.scientistList) { position ->
-            val action = MainFragmentDirections.actionMainFragmentToDetailsFragment(repository.scientistList[position])
-            v.findNavController().navigate(action)
+        db = scientistsDataBase.getAppDataBase(v.context)
+        scientistDao = db?.scientistDao()
+
+        scientistAdapter = ScientistAdapter(scientistDao?.loadAllScientist()) { scientist ->
+            val action = scientist?.let {
+                MainFragmentDirections.actionMainFragmentToDetailsFragment(
+                    it
+                )
+            }
+            if (action != null) {
+                v.findNavController().navigate(action)
+            }
         }
 
         recyclerScientists.adapter = scientistAdapter
 
+        //TODO
         //val user = mainFragmentArgs.fromBundle(requireArguments()).logedUsr
 
         nameTextView.text = "user.name"// + '!'
+
+        val scientist = Scientist(
+            "Albert Einstein",
+            "https://en.wikipedia.org/wiki/Albert_Einstein",
+            "German",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Einstein_1921_by_F_Schmutzer_-_restoration.jpg/800px-Einstein_1921_by_F_Schmutzer_-_restoration.jpg"
+        )
+
+        scientistDao?.insertScientist(scientist)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

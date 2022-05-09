@@ -9,8 +9,9 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.utn.nerdypedia.R
 
-class ScientistAdapter (var scientistList: MutableList<Scientist>,
-                        var onClick : (Int) -> Unit
+class ScientistAdapter(
+    var scientistList: MutableList<Scientist?>?,
+    var onClick: (Scientist?) -> Unit
 ) : RecyclerView.Adapter<ScientistAdapter.ScientistHolder>(){
 
     class ScientistHolder(v : View) : RecyclerView.ViewHolder(v) {
@@ -33,13 +34,13 @@ class ScientistAdapter (var scientistList: MutableList<Scientist>,
     }
 
     override fun onBindViewHolder(holder: ScientistHolder, position: Int) {
-        holder.setName(scientistList[position].name)
+        scientistList?.get(position)?.let { holder.setName(it.name) }
         holder.getCard().setOnClickListener {
-            onClick(position)
+            onClick(scientistList?.get(position))
         }
     }
 
     override fun getItemCount(): Int {
-        return scientistList.size
+        return scientistList?.size ?: 0
     }
 }
