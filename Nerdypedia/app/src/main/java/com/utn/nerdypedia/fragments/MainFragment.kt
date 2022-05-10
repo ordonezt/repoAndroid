@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.utn.nerdypedia.R
 import com.utn.nerdypedia.adapters.ScientistAdapter
 import com.utn.nerdypedia.database.scientistDao
@@ -34,6 +35,8 @@ class MainFragment : Fragment() {
     private var db : scientistsDataBase? = null
     private var scientistDao : scientistDao? = null
 
+    private lateinit var fab : FloatingActionButton
+
     private lateinit var v: View
 
     override fun onCreateView(
@@ -44,6 +47,8 @@ class MainFragment : Fragment() {
 
         nameTextView = v.findViewById(R.id.nameTextView)
         recyclerScientists = v.findViewById(R.id.recyclerScientists)
+        fab = v.findViewById(R.id.fab)
+
         return v
     }
 
@@ -82,6 +87,11 @@ class MainFragment : Fragment() {
         )
 
         scientistDao?.insertScientist(scientist)
+
+        fab.setOnClickListener{
+            var action = MainFragmentDirections.actionMainFragmentToAddFragment(null)
+            v.findNavController().navigate(action)
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

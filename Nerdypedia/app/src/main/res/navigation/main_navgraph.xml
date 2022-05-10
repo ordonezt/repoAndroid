@@ -38,7 +38,12 @@
         android:id="@+id/addFragment"
         android:name="com.utn.nerdypedia.fragments.AddFragment"
         android:label="add_fragment"
-        tools:layout="@layout/add_fragment" />
+        tools:layout="@layout/add_fragment" >
+        <argument
+            android:name="selectedScientist"
+            app:argType="com.utn.nerdypedia.entities.Scientist"
+            app:nullable="true" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.utn.nerdypedia.fragments.ProfileFragment"
