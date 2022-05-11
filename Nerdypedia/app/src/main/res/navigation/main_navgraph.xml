@@ -49,4 +49,18 @@
         android:name="com.utn.nerdypedia.fragments.ProfileFragment"
         android:label="profile_fragment"
         tools:layout="@layout/profile_fragment" />
+    <fragment
+        android:id="@+id/settingsFakeFragment2"
+        android:name="com.utn.nerdypedia.fragments.SettingsFakeFragment"
+        android:label="settings_fake_fragment"
+        tools:layout="@layout/settings_fake_fragment" >
+        <action
+            android:id="@+id/action_settingsFakeFragment2_to_settingsActivity"
+            app:destination="@id/settingsActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/settingsActivity"
+        android:name="com.utn.nerdypedia.activities.SettingsActivity"
+        android:label="activity_settings"
+        tools:layout="@layout/activity_settings" />
 </navigation>
