@@ -78,7 +78,15 @@ class AddFragment : Fragment() {
                biography    != "" &&
                citizenship  != "" &&
                pictureUrl   != ""){
-                scientistDao?.insertScientist(Scientist(name, biography, citizenship, pictureUrl))
+                   if(scientist != null) {
+                       scientist.name = name
+                       scientist.biographyUrl = biography
+                       scientist.citizenship = citizenship
+                       scientist.pictureUrl = pictureUrl
+                       scientistDao?.updateScientist(scientist)
+                   } else {
+                       scientistDao?.insertScientist(Scientist(name, biography, citizenship, pictureUrl))
+                   }
                 activity?.onBackPressed()
             } else {
                 Snackbar.make(v, "Complete all fields", Snackbar.LENGTH_LONG).show()

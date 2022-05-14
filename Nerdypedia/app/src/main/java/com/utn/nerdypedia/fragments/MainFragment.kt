@@ -61,7 +61,7 @@ class MainFragment : Fragment() {
         db = scientistsDataBase.getAppDataBase(v.context)
         scientistDao = db?.scientistDao()
 
-        scientistAdapter = ScientistAdapter(scientistDao?.loadAllScientist()) { scientist ->
+        val clickCard = fun (scientist : Scientist?) {
             val action = scientist?.let {
                 MainFragmentDirections.actionMainFragmentToDetailsFragment(
                     it
@@ -71,7 +71,16 @@ class MainFragment : Fragment() {
                 v.findNavController().navigate(action)
             }
         }
+        val clickEdit = fun (scientist : Scientist?){
+            var action = MainFragmentDirections.actionMainFragmentToAddFragment(scientist)
+            v.findNavController().navigate(action)
+        }
 
+        val clickDelete = fun (scientist : Scientist?) {
+            scientistDao?.deleteScientist(scientist)
+            onStart()
+        }
+        scientistAdapter = ScientistAdapter(scientistDao?.loadAllScientist(), clickCard, clickEdit, clickDelete)
         recyclerScientists.adapter = scientistAdapter
 
         //TODO

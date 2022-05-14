@@ -11,7 +11,9 @@ import com.utn.nerdypedia.R
 
 class ScientistAdapter(
     var scientistList: MutableList<Scientist?>?,
-    var onClick: (Scientist?) -> Unit
+    var onClickItem: (Scientist?) -> Unit,
+    var onClickEdit: (Scientist?) -> Unit,
+    var onClickDelete: (Scientist?) -> Unit
 ) : RecyclerView.Adapter<ScientistAdapter.ScientistHolder>(){
 
     class ScientistHolder(v : View) : RecyclerView.ViewHolder(v) {
@@ -26,6 +28,15 @@ class ScientistAdapter(
         fun getCard () : CardView {
             return view.findViewById(R.id.card_item)
         }
+
+        fun getEditBtn() : View {
+            return view.findViewById(R.id.button_edit)
+        }
+
+        fun getDeleteBtn() : View {
+            return view.findViewById(R.id.button_delete)
+        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScientistHolder {
@@ -36,7 +47,15 @@ class ScientistAdapter(
     override fun onBindViewHolder(holder: ScientistHolder, position: Int) {
         scientistList?.get(position)?.let { holder.setName(it.name) }
         holder.getCard().setOnClickListener {
-            onClick(scientistList?.get(position))
+            onClickItem(scientistList?.get(position))
+        }
+
+        holder.getEditBtn().setOnClickListener {
+            onClickEdit(scientistList?.get(position))
+        }
+
+        holder.getDeleteBtn().setOnClickListener {
+            onClickDelete(scientistList?.get(position))
         }
     }
 
