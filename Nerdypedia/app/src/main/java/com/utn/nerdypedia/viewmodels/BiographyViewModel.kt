@@ -1,4 +1,4 @@
-package com.utn.nerdypedia.fragments
+package com.utn.nerdypedia.viewmodels
 
 import androidx.lifecycle.ViewModel
 
