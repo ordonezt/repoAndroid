@@ -8,7 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.utn.nerdypedia.R
+import com.utn.nerdypedia.entities.DetailsPagerAdapter
 import com.utn.nerdypedia.viewmodels.DetailsViewModel
 
 class DetailsFragment : Fragment() {
@@ -23,6 +27,9 @@ class DetailsFragment : Fragment() {
     private lateinit var scientistNameText : TextView
     private lateinit var scientistImageView : ImageView
 
+    lateinit var viewPager: ViewPager2
+    lateinit var tabLayout: TabLayout
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,6 +38,9 @@ class DetailsFragment : Fragment() {
 
         scientistNameText = v.findViewById(R.id.scientistNameTextView)
         scientistImageView = v.findViewById(R.id.scientistImageView)
+
+        viewPager = v.findViewById(R.id.view_pager)
+        tabLayout = v.findViewById(R.id.tab_layout)
 
         return v
     }
@@ -47,5 +57,15 @@ class DetailsFragment : Fragment() {
         val scientist = DetailsFragmentArgs.fromBundle(requireArguments()).selectedItem
 
         scientistNameText.text = scientist.name
+
+        viewPager.setAdapter(DetailsPagerAdapter(requireActivity()))
+
+        TabLayoutMediator(tabLayout, viewPager, TabLayoutMediator.TabConfigurationStrategy { tab, position ->
+            when (position) {
+                0 -> tab.text = "Tab1"
+                1 -> tab.text = "Tab2"
+                else -> tab.text = "undefined"
+            }
+        }).attach()
     }
 }
