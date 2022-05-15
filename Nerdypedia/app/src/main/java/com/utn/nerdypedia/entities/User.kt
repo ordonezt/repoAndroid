@@ -1,13 +1,29 @@
 package com.utn.nerdypedia.entities
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@Entity(tableName = "user", indices = [Index(value = ["username"], unique = true)])
 class User(
-    var id : Int,
-    var name : String,
-    var password : String,
-    var username : String
-) : Parcelable {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    var id: Int = 0,
+
+    @ColumnInfo(name = "name")
+    var name: String,
+
+    @ColumnInfo(name = "password")
+    var password: String,
+
+    @ColumnInfo(name = "username")
+    var username: String) : Parcelable
+{
+    constructor(name: String, password: String, username: String) : this(0,name, password, username) {
+
+    }
 }

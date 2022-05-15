@@ -12,7 +12,7 @@ import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import com.utn.nerdypedia.R
 import com.utn.nerdypedia.database.scientistDao
-import com.utn.nerdypedia.database.scientistsDataBase
+import com.utn.nerdypedia.database.appDataBase
 import com.utn.nerdypedia.entities.Scientist
 import com.utn.nerdypedia.viewmodels.AddViewModel
 
@@ -31,7 +31,7 @@ class AddFragment : Fragment() {
     private lateinit var editTextPictureUrl : EditText
     private lateinit var textViewTitle : TextView
 
-    private var db : scientistsDataBase? = null
+    private var db : appDataBase? = null
     private var scientistDao : scientistDao? = null
 
     private lateinit var v: View
@@ -55,7 +55,7 @@ class AddFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        db = scientistsDataBase.getAppDataBase(v.context)
+        db = appDataBase.getAppDataBase(v.context)
         scientistDao = db?.scientistDao()
 
         val scientist = AddFragmentArgs.fromBundle((requireArguments())).selectedScientist

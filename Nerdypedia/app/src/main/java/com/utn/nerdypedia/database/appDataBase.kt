@@ -5,22 +5,24 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.utn.nerdypedia.entities.Scientist
+import com.utn.nerdypedia.entities.User
 
-@Database(entities = [Scientist::class], version = 4, exportSchema = false)
+@Database(entities = [Scientist::class, User::class], version = 5, exportSchema = false)
 
-public  abstract class scientistsDataBase : RoomDatabase() {
+public  abstract class appDataBase : RoomDatabase() {
 
     abstract fun scientistDao(): scientistDao
+    abstract fun userDao(): userDao
 
     companion object {
-        var INSTANCE: scientistsDataBase? = null
+        var INSTANCE: appDataBase? = null
 
-        fun getAppDataBase(context: Context): scientistsDataBase? {
+        fun getAppDataBase(context: Context): appDataBase? {
             if (INSTANCE == null) {
-                synchronized(scientistsDataBase::class) {
+                synchronized(appDataBase::class) {
                     INSTANCE = Room.databaseBuilder(
                         context.applicationContext,
-                        scientistsDataBase::class.java,
+                        appDataBase::class.java,
                         "scientistDB"
                     ).allowMainThreadQueries().fallbackToDestructiveMigration().build() // No es lo mas recomendable que se ejecute en el mainthread
                 }

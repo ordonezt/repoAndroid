@@ -14,7 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.utn.nerdypedia.R
 import com.utn.nerdypedia.adapters.ScientistAdapter
 import com.utn.nerdypedia.database.scientistDao
-import com.utn.nerdypedia.database.scientistsDataBase
+import com.utn.nerdypedia.database.appDataBase
 import com.utn.nerdypedia.entities.Scientist
 import com.utn.nerdypedia.entities.ScientistRepository
 import com.utn.nerdypedia.viewmodels.MainViewModel
@@ -32,7 +32,7 @@ class MainFragment : Fragment() {
 
     private lateinit var scientistAdapter : ScientistAdapter
     private var repository : ScientistRepository = ScientistRepository()
-    private var db : scientistsDataBase? = null
+    private var db : appDataBase? = null
     private var scientistDao : scientistDao? = null
 
     private lateinit var fab : FloatingActionButton
@@ -58,7 +58,7 @@ class MainFragment : Fragment() {
         recyclerScientists.setHasFixedSize(true)
         recyclerScientists.layoutManager = LinearLayoutManager(context)
 
-        db = scientistsDataBase.getAppDataBase(v.context)
+        db = appDataBase.getAppDataBase(v.context)
         scientistDao = db?.scientistDao()
 
         val clickCard = fun (scientist : Scientist?) {
