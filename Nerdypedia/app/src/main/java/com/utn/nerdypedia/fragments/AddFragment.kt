@@ -14,6 +14,7 @@ import com.utn.nerdypedia.R
 import com.utn.nerdypedia.database.scientistDao
 import com.utn.nerdypedia.database.appDataBase
 import com.utn.nerdypedia.entities.Scientist
+import com.utn.nerdypedia.entities.Session
 import com.utn.nerdypedia.viewmodels.AddViewModel
 
 class AddFragment : Fragment() {
@@ -85,7 +86,8 @@ class AddFragment : Fragment() {
                        scientist.pictureUrl = pictureUrl
                        scientistDao?.updateScientist(scientist)
                    } else {
-                       scientistDao?.insertScientist(Scientist(name, biography, citizenship, pictureUrl))
+                       val author = Session.user.username
+                       scientistDao?.insertScientist(Scientist(name, biography, citizenship, pictureUrl, author))
                    }
                 activity?.onBackPressed()
             } else {

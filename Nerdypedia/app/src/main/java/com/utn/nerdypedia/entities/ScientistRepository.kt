@@ -4,7 +4,7 @@ class ScientistRepository {
     var scientistList : MutableList<Scientist> = mutableListOf()
 
     init{
-        scientistList.add(Scientist( "Albert Einstein","https://en.wikipedia.org/wiki/Albert_Einstein","German", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Einstein_1921_by_F_Schmutzer_-_restoration.jpg/800px-Einstein_1921_by_F_Schmutzer_-_restoration.jpg"))
+        /*scientistList.add(Scientist( "Albert Einstein","https://en.wikipedia.org/wiki/Albert_Einstein","German", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Einstein_1921_by_F_Schmutzer_-_restoration.jpg/800px-Einstein_1921_by_F_Schmutzer_-_restoration.jpg"))
         scientistList.add(Scientist( "Stephen Hawking","https://en.wikipedia.org/wiki/Stephen_Hawking","English", "https://upload.wikimedia.org/wikipedia/commons/e/eb/Stephen_Hawking.StarChild.jpg"))
         scientistList.add(Scientist( "James Clerk Maxwell","https://en.wikipedia.org/wiki/James_Clerk_Maxwell","Scottish", "https://upload.wikimedia.org/wikipedia/commons/5/57/James_Clerk_Maxwell.png"))
         scientistList.add(Scientist("Marie Curie","https://en.wikipedia.org/wiki/Marie_Curie","Polish", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Marie_Curie_c._1920s.jpg/800px-Marie_Curie_c._1920s.jpg"))
@@ -25,7 +25,7 @@ class ScientistRepository {
         scientistList.add(Scientist("Isaac Newton","https://en.wikipedia.org/wiki/Isaac_Newton","English", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Portrait_of_Sir_Isaac_Newton%2C_1689.jpg/800px-Portrait_of_Sir_Isaac_Newton%2C_1689.jpg"))
         scientistList.add(Scientist("Alan Turing","https://en.wikipedia.org/wiki/Alan_Turing","English", "https://upload.wikimedia.org/wikipedia/commons/a/a1/Alan_Turing_Aged_16.jpg"))
         scientistList.add(Scientist("Pierre de Fermat","https://en.wikipedia.org/wiki/Pierre_de_Fermat","French", "https://upload.wikimedia.org/wikipedia/commons/f/f3/Pierre_de_Fermat.jpg"))
-        scientistList.add(Scientist("J. Robert Oppenheimer","https://en.wikipedia.org/wiki/J._Robert_Oppenheimer","American", "https://upload.wikimedia.org/wikipedia/commons/0/03/JROppenheimer-LosAlamos.jpg"))
+        scientistList.add(Scientist("J. Robert Oppenheimer","https://en.wikipedia.org/wiki/J._Robert_Oppenheimer","American", "https://upload.wikimedia.org/wikipedia/commons/0/03/JROppenheimer-LosAlamos.jpg"))*/
     }
 
     fun getMovies () : MutableList<Scientist>{

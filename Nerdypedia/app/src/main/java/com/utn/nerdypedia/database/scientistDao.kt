@@ -21,4 +21,7 @@ public interface scientistDao {
     @Query("SELECT * FROM scientist WHERE id = :id")
     fun loadScientistById(id: Int): Scientist?
 
+    @Query("SELECT * FROM scientist WHERE author = :author")
+    fun loadScientistByAuthor(author: String): MutableList<Scientist?>?
+
 }

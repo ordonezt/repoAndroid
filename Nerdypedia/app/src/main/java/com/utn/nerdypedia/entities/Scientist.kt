@@ -24,9 +24,22 @@ class Scientist(
     var citizenship: String,
 
     @ColumnInfo(name = "pictureUrl")
-    var pictureUrl: String) : Parcelable
+    var pictureUrl: String,
+
+    @ColumnInfo(name = "author")
+    var author: String) : Parcelable
 {
-    constructor(name: String, biographyUrl: String, citizenship: String, pictureUrl: String) : this(0,name, biographyUrl, citizenship, pictureUrl) {
+    constructor(name: String,
+                biographyUrl: String,
+                citizenship: String,
+                pictureUrl: String,
+                author: String) :
+                this(0,
+                        name,
+                        biographyUrl,
+                        citizenship,
+                        pictureUrl,
+                        author) {
 
     }
 }

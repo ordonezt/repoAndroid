@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.navigation.findNavController
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -17,6 +18,7 @@ import com.utn.nerdypedia.database.scientistDao
 import com.utn.nerdypedia.database.appDataBase
 import com.utn.nerdypedia.entities.Scientist
 import com.utn.nerdypedia.entities.ScientistRepository
+import com.utn.nerdypedia.entities.Session
 import com.utn.nerdypedia.viewmodels.MainViewModel
 
 class MainFragment : Fragment() {
@@ -36,6 +38,8 @@ class MainFragment : Fragment() {
     private var scientistDao : scientistDao? = null
 
     private lateinit var fab : FloatingActionButton
+
+    private lateinit var list: MutableList<Scientist?>
 
     private lateinit var v: View
 
@@ -61,6 +65,8 @@ class MainFragment : Fragment() {
         db = appDataBase.getAppDataBase(v.context)
         scientistDao = db?.scientistDao()
 
+        val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+
         val clickCard = fun (scientist : Scientist?) {
             val action = scientist?.let {
                 MainFragmentDirections.actionMainFragmentToDetailsFragment(
@@ -80,22 +86,25 @@ class MainFragment : Fragment() {
             scientistDao?.deleteScientist(scientist)
             onStart()
         }
-        scientistAdapter = ScientistAdapter(scientistDao?.loadAllScientist(), clickCard, clickEdit, clickDelete)
+
+        if(prefs.getBoolean("showPrivate", false)) {
+            list = scientistDao?.loadScientistByAuthor(Session.user.username)!!
+        } else {
+            list = scientistDao?.loadAllScientist()!!
+        }
+        scientistAdapter = ScientistAdapter(list, clickCard, clickEdit, clickDelete)
         recyclerScientists.adapter = scientistAdapter
 
-        //TODO
-        //val user = mainFragmentArgs.fromBundle(requireArguments()).logedUsr
+        nameTextView.text = Session.user.name + '!'
 
-        nameTextView.text = "user.name"// + '!'
-
-        val scientist = Scientist(
+/*        val scientist = Scientist(
             "Albert Einstein",
             "https://en.wikipedia.org/wiki/Albert_Einstein",
             "German",
             "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Einstein_1921_by_F_Schmutzer_-_restoration.jpg/800px-Einstein_1921_by_F_Schmutzer_-_restoration.jpg"
         )
 
-        scientistDao?.insertScientist(scientist)
+        scientistDao?.insertScientist(scientist)*/
 
         fab.setOnClickListener{
             var action = MainFragmentDirections.actionMainFragmentToAddFragment(null)

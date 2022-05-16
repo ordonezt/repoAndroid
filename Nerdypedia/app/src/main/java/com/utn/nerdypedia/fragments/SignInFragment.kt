@@ -19,6 +19,7 @@ import com.utn.nerdypedia.activities.MainActivity
 import com.utn.nerdypedia.database.appDataBase
 import com.utn.nerdypedia.database.scientistDao
 import com.utn.nerdypedia.database.userDao
+import com.utn.nerdypedia.entities.Session
 import com.utn.nerdypedia.entities.User
 import com.utn.nerdypedia.viewmodels.SignInViewModel
 
@@ -83,6 +84,7 @@ class SignInFragment : Fragment() {
 
                 userDao?.insertUser(user)
 
+                Session.user = user //El usuario que ingreso queda guardado en el singleton
                 val intent = Intent(v.context, MainActivity::class.java)
                 startActivity(intent)
                 activity?.finish()

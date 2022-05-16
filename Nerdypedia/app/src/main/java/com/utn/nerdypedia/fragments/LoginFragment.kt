@@ -19,6 +19,7 @@ import com.utn.nerdypedia.R
 import com.utn.nerdypedia.activities.MainActivity
 import com.utn.nerdypedia.database.appDataBase
 import com.utn.nerdypedia.database.userDao
+import com.utn.nerdypedia.entities.Session
 import com.utn.nerdypedia.entities.User
 import com.utn.nerdypedia.viewmodels.LoginViewModel
 
@@ -80,6 +81,7 @@ class LoginFragment : Fragment() {
                     hideKeyboard()
                     Snackbar.make(v, "The password you’ve entered is incorrect", Snackbar.LENGTH_LONG).show()
                 } else {
+                    Session.user = user //El usuario que ingreso queda guardado en el singleton
                     val intent = Intent(v.context, MainActivity::class.java)
                     startActivity(intent)
                     activity?.finish()
