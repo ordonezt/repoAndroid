@@ -74,6 +74,7 @@ class MainFragment : Fragment() {
                 )
             }
             if (action != null) {
+                Session.scientist = scientist
                 v.findNavController().navigate(action)
             }
         }
@@ -97,14 +98,15 @@ class MainFragment : Fragment() {
 
         nameTextView.text = Session.user.name + '!'
 
-/*        val scientist = Scientist(
+        val scientist = Scientist(
             "Albert Einstein",
             "https://en.wikipedia.org/wiki/Albert_Einstein",
             "German",
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Einstein_1921_by_F_Schmutzer_-_restoration.jpg/800px-Einstein_1921_by_F_Schmutzer_-_restoration.jpg"
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Einstein_1921_by_F_Schmutzer_-_restoration.jpg/800px-Einstein_1921_by_F_Schmutzer_-_restoration.jpg",
+            "admin"
         )
 
-        scientistDao?.insertScientist(scientist)*/
+        scientistDao?.insertScientist(scientist)
 
         fab.setOnClickListener{
             var action = MainFragmentDirections.actionMainFragmentToAddFragment(null)

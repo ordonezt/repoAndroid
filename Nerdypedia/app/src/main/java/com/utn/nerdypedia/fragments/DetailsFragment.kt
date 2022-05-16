@@ -36,8 +36,8 @@ class DetailsFragment : Fragment() {
     ): View? {
         v = inflater.inflate(R.layout.details_fragment, container, false)
 
-        scientistNameText = v.findViewById(R.id.scientistNameTextView)
-        scientistImageView = v.findViewById(R.id.scientistImageView)
+        //scientistNameText = v.findViewById(R.id.scientistNameTextView)
+        //scientistImageView = v.findViewById(R.id.scientistImageView)
 
         viewPager = v.findViewById(R.id.view_pager)
         tabLayout = v.findViewById(R.id.tab_layout)
@@ -56,7 +56,7 @@ class DetailsFragment : Fragment() {
 
         val scientist = DetailsFragmentArgs.fromBundle(requireArguments()).selectedItem
 
-        scientistNameText.text = scientist.name
+        //scientistNameText.text = scientist.name
 
         viewPager.setAdapter(DetailsPagerAdapter(requireActivity()))
 
