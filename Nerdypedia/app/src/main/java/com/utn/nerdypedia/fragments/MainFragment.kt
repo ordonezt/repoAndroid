@@ -20,6 +20,8 @@ import com.utn.nerdypedia.entities.Scientist
 import com.utn.nerdypedia.entities.ScientistRepository
 import com.utn.nerdypedia.entities.Session
 import com.utn.nerdypedia.viewmodels.MainViewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class MainFragment : Fragment() {
 
@@ -98,11 +100,13 @@ class MainFragment : Fragment() {
 
         nameTextView.text = Session.user.name + '!'
 
+        val currentTime = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+        val date = currentTime.format(formatter)
         val scientist = Scientist(
             "Albert Einstein",
             "https://en.wikipedia.org/wiki/Albert_Einstein",
-            "German",
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Einstein_1921_by_F_Schmutzer_-_restoration.jpg/800px-Einstein_1921_by_F_Schmutzer_-_restoration.jpg",
+            date,
             "admin"
         )
 

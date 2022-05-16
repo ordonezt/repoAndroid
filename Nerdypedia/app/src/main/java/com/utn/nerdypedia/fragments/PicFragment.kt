@@ -49,7 +49,7 @@ class PicFragment : Fragment() {
 
         detailsNameText.text = "Name: " + Session.scientist.name
         detailsAuthorText.text = "Author: " + Session.scientist.author
-        //detailsDateText.text = "Date: " + Session.scientist.date
+        detailsDateText.text = "Date: " + Session.scientist.date
         detailsUrlText.text = "URL: " + Session.scientist.biographyUrl
     }
 }

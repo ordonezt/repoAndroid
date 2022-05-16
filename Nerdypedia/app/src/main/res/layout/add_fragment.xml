@@ -63,33 +63,6 @@
         app:layout_constraintStart_toStartOf="@+id/editTextName"
         app:layout_constraintTop_toBottomOf="@+id/editTextName" />
 
-    <EditText
-        android:id="@+id/editTextCitizenship"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:ems="10"
-        android:hint="Citizenship"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        app:layout_constraintEnd_toEndOf="@+id/editTextBiography"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/editTextBiography"
-        app:layout_constraintTop_toBottomOf="@+id/editTextBiography" />
-
-    <EditText
-        android:id="@+id/editTextPictureUrl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:ems="10"
-        android:hint="Picture Url"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        app:layout_constraintEnd_toEndOf="@+id/editTextCitizenship"
-        app:layout_constraintStart_toStartOf="@+id/editTextCitizenship"
-        app:layout_constraintTop_toBottomOf="@+id/editTextCitizenship" />
-
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
@@ -105,11 +78,11 @@
         android:id="@+id/buttonSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="40dp"
         android:text="Save"
         app:layout_constraintEnd_toStartOf="@+id/guideline13"
         app:layout_constraintStart_toStartOf="@+id/guideline12"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPictureUrl" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextBiography" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

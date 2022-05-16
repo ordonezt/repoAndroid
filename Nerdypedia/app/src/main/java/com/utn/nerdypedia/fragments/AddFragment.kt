@@ -16,6 +16,8 @@ import com.utn.nerdypedia.database.appDataBase
 import com.utn.nerdypedia.entities.Scientist
 import com.utn.nerdypedia.entities.Session
 import com.utn.nerdypedia.viewmodels.AddViewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class AddFragment : Fragment() {
 
@@ -28,8 +30,6 @@ class AddFragment : Fragment() {
     private lateinit var buttonSave : Button
     private lateinit var editTextName : EditText
     private lateinit var editTextBiography : EditText
-    private lateinit var editTextCitizenship : EditText
-    private lateinit var editTextPictureUrl : EditText
     private lateinit var textViewTitle : TextView
 
     private var db : appDataBase? = null
@@ -46,8 +46,6 @@ class AddFragment : Fragment() {
         buttonSave = v.findViewById(R.id.buttonSave)
         editTextName = v.findViewById(R.id.editTextName)
         editTextBiography = v.findViewById(R.id.editTextBiography)
-        editTextCitizenship = v.findViewById(R.id.editTextCitizenship)
-        editTextPictureUrl = v.findViewById(R.id.editTextPictureUrl)
         textViewTitle = v.findViewById(R.id.textViewTitle)
 
         return v
@@ -65,29 +63,25 @@ class AddFragment : Fragment() {
             textViewTitle.text = "Edit"
             editTextName.setText(scientist.name)
             editTextBiography.setText(scientist.biographyUrl)
-            editTextCitizenship.setText(scientist.citizenship)
-            editTextPictureUrl.setText(scientist.pictureUrl)
         }
 
         buttonSave.setOnClickListener{
             val name = editTextName.text.toString()
             val biography = editTextBiography.text.toString()
-            val citizenship = editTextCitizenship.text.toString()
-            val pictureUrl = editTextPictureUrl.text.toString()
 
             if(name         != "" &&
-               biography    != "" &&
-               citizenship  != "" &&
-               pictureUrl   != ""){
+               biography    != ""){
                    if(scientist != null) {
                        scientist.name = name
                        scientist.biographyUrl = biography
-                       scientist.citizenship = citizenship
-                       scientist.pictureUrl = pictureUrl
                        scientistDao?.updateScientist(scientist)
                    } else {
+                       val currentTime = LocalDateTime.now()
+                       val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+                       val date = currentTime.format(formatter)
+
                        val author = Session.user.username
-                       scientistDao?.insertScientist(Scientist(name, biography, citizenship, pictureUrl, author))
+                       scientistDao?.insertScientist(Scientist(name, biography, date, author))
                    }
                 activity?.onBackPressed()
             } else {
