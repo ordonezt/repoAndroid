@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import androidx.navigation.findNavController
 import com.utn.nerdypedia.R
 import com.utn.nerdypedia.entities.Session
 import com.utn.nerdypedia.viewmodels.ProfileViewModel
@@ -24,12 +26,20 @@ class ProfileFragment : Fragment() {
     private lateinit var profileUserNameText : TextView
     private lateinit var profileEmailText : TextView
     private lateinit var profileLastLoginText : TextView
+    private lateinit var settingsBtn : Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         v = inflater.inflate(R.layout.profile_fragment, container, false)
+
+        profileNameText = v.findViewById(R.id.profileNameText)
+        profileUserNameText = v.findViewById(R.id.profileUserNameText)
+        profileEmailText = v.findViewById(R.id.profileEmailText)
+        profileLastLoginText = v.findViewById(R.id.profileLastLoginText)
+        settingsBtn = v.findViewById(R.id.settingsBtn)
+
         return v
     }
 
@@ -42,14 +52,17 @@ class ProfileFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        profileNameText = v.findViewById(R.id.profileNameText)
-        profileUserNameText = v.findViewById(R.id.profileUserNameText)
-        profileEmailText = v.findViewById(R.id.profileEmailText)
-        profileLastLoginText = v.findViewById(R.id.profileLastLoginText)
+
 
         profileNameText.text = Session.user.name
         profileUserNameText.text = Session.user.username
 //        profileEmailText.text = Session.user.email
 //        profileLastLoginText.text = Session.user.lastLogin
+
+        settingsBtn.setOnClickListener{
+            val action = ProfileFragmentDirections.actionProfileFragmentToSettingsActivity()
+            v.findNavController().navigate(action)
+        }
+
     }
 }

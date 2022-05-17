@@ -48,14 +48,9 @@
         android:id="@+id/profileFragment"
         android:name="com.utn.nerdypedia.fragments.ProfileFragment"
         android:label="profile_fragment"
-        tools:layout="@layout/profile_fragment" />
-    <fragment
-        android:id="@+id/settingsFakeFragment2"
-        android:name="com.utn.nerdypedia.fragments.SettingsFakeFragment"
-        android:label="settings_fake_fragment"
-        tools:layout="@layout/settings_fake_fragment" >
+        tools:layout="@layout/profile_fragment" >
         <action
-            android:id="@+id/action_settingsFakeFragment2_to_settingsActivity"
+            android:id="@+id/action_profileFragment_to_settingsActivity"
             app:destination="@id/settingsActivity" />
     </fragment>
     <activity
