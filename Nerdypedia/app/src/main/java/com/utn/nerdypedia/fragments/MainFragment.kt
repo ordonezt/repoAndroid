@@ -35,13 +35,13 @@ class MainFragment : Fragment() {
     private lateinit var recyclerScientists : RecyclerView
 
     private lateinit var scientistAdapter : ScientistAdapter
-    private var repository : ScientistRepository = ScientistRepository()
     private var db : appDataBase? = null
     private var scientistDao : scientistDao? = null
 
     private lateinit var fab : FloatingActionButton
 
     private lateinit var list: MutableList<Scientist?>
+    private lateinit var listEmptyText: TextView
 
     private lateinit var v: View
 
@@ -54,6 +54,7 @@ class MainFragment : Fragment() {
         nameTextView = v.findViewById(R.id.nameTextView)
         recyclerScientists = v.findViewById(R.id.recyclerScientists)
         fab = v.findViewById(R.id.fab)
+        listEmptyText = v.findViewById(R.id.listEmptyText)
 
         return v
     }
@@ -97,6 +98,14 @@ class MainFragment : Fragment() {
         }
         scientistAdapter = ScientistAdapter(list, clickCard, clickEdit, clickDelete)
         recyclerScientists.adapter = scientistAdapter
+
+        if(scientistAdapter.itemCount > 0){
+            listEmptyText.visibility = View.INVISIBLE
+            recyclerScientists.visibility = View.VISIBLE
+        } else {
+            listEmptyText.visibility = View.VISIBLE
+            recyclerScientists.visibility = View.INVISIBLE
+        }
 
         nameTextView.text = Session.user.name + '!'
 

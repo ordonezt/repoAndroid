@@ -24,8 +24,6 @@ class DetailsFragment : Fragment() {
     private lateinit var viewModel: DetailsViewModel
 
     private lateinit var v: View
-    private lateinit var scientistNameText : TextView
-    private lateinit var scientistImageView : ImageView
 
     lateinit var viewPager: ViewPager2
     lateinit var tabLayout: TabLayout
@@ -35,9 +33,6 @@ class DetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         v = inflater.inflate(R.layout.details_fragment, container, false)
-
-        //scientistNameText = v.findViewById(R.id.scientistNameTextView)
-        //scientistImageView = v.findViewById(R.id.scientistImageView)
 
         viewPager = v.findViewById(R.id.view_pager)
         tabLayout = v.findViewById(R.id.tab_layout)
@@ -56,14 +51,12 @@ class DetailsFragment : Fragment() {
 
         val scientist = DetailsFragmentArgs.fromBundle(requireArguments()).selectedItem
 
-        //scientistNameText.text = scientist.name
-
         viewPager.setAdapter(DetailsPagerAdapter(requireActivity()))
 
         TabLayoutMediator(tabLayout, viewPager, TabLayoutMediator.TabConfigurationStrategy { tab, position ->
             when (position) {
-                0 -> tab.text = "Tab1"
-                1 -> tab.text = "Tab2"
+                0 -> tab.text = "Biography"
+                1 -> tab.text = "Info"
                 else -> tab.text = "undefined"
             }
         }).attach()
