@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ProgressBar
 import com.utn.nerdypedia.R
 import com.utn.nerdypedia.entities.Session
 import com.utn.nerdypedia.viewmodels.BiographyViewModel
@@ -21,6 +22,7 @@ class BiographyFragment : Fragment() {
     private lateinit var viewModel: BiographyViewModel
     private lateinit var v: View
     private lateinit var webView: WebView
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,8 +42,16 @@ class BiographyFragment : Fragment() {
         super.onStart()
 
         webView = v.findViewById(R.id.webView)
+        progressBar = v.findViewById(R.id.progressBar)
 
-        webView.webViewClient = WebViewClient()
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                webView.visibility = View.VISIBLE
+                progressBar.visibility = View.INVISIBLE
+            }
+        }
+
         webView.settings.javaScriptEnabled = true
         webView.settings.setSupportZoom(true)
         webView.loadUrl(Session.scientist.biographyUrl)
