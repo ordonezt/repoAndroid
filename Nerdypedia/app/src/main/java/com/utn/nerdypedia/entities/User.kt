@@ -21,9 +21,12 @@ class User(
     var password: String,
 
     @ColumnInfo(name = "username")
-    var username: String) : Parcelable
+    var username: String,
+
+    @ColumnInfo(name = "email")
+    var email: String) : Parcelable
 {
-    constructor(name: String, password: String, username: String) : this(0,name, password, username) {
+    constructor(name: String, password: String, username: String, email: String) : this(0,name, password, username, email) {
 
     }
 }

@@ -52,11 +52,9 @@ class ProfileFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-
-
         profileNameText.text = Session.user.name
         profileUserNameText.text = Session.user.username
-//        profileEmailText.text = Session.user.email
+        profileEmailText.text = Session.user.email
 //        profileLastLoginText.text = Session.user.lastLogin
 
         settingsBtn.setOnClickListener{

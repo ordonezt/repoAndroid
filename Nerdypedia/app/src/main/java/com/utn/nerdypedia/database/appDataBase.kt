@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.utn.nerdypedia.entities.Scientist
 import com.utn.nerdypedia.entities.User
 
-@Database(entities = [Scientist::class, User::class], version = 7, exportSchema = false)
+@Database(entities = [Scientist::class, User::class], version = 8, exportSchema = false)
 
 public  abstract class appDataBase : RoomDatabase() {
 

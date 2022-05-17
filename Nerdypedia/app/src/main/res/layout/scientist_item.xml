@@ -28,7 +28,6 @@
             android:id="@+id/button_edit"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginEnd="30dp"
             android:background="@drawable/ic_baseline_edit_24"
             android:contentDescription="Edit button"
             app:layout_constraintBottom_toBottomOf="parent"

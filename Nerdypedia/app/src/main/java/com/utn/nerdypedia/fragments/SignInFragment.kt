@@ -37,6 +37,7 @@ class SignInFragment : Fragment() {
     private lateinit var usernameText: EditText
     private lateinit var passwordText : EditText
     private lateinit var passwordText2 : EditText
+    private lateinit var emailText: EditText
 
     private var db : appDataBase? = null
     private var userDao : userDao? = null
@@ -66,9 +67,14 @@ class SignInFragment : Fragment() {
         usernameText = v.findViewById(R.id.userNameText)
         passwordText = v.findViewById(R.id.passwordText)
         passwordText2 = v.findViewById(R.id.passwordText2)
+        emailText = v.findViewById(R.id.emailText)
 
         signInButton.setOnClickListener {
-            if(nameText.text.isEmpty() or usernameText.text.isEmpty() or passwordText.text.isEmpty() or passwordText2.text.isEmpty()) {
+            if( nameText.text.isEmpty() or
+                usernameText.text.isEmpty() or
+                passwordText.text.isEmpty() or
+                passwordText2.text.isEmpty() or
+                emailText.text.isEmpty()) {
                 hideKeyboard()
                 Snackbar.make(v, "Complete all fields", Snackbar.LENGTH_LONG).show()
             } else if(passwordText.text.toString() != passwordText2.text.toString()){
@@ -80,7 +86,8 @@ class SignInFragment : Fragment() {
             } else {
                 val user = User(nameText.text.toString(),
                                 passwordText.text.toString(),
-                                usernameText.text.toString())
+                                usernameText.text.toString(),
+                                emailText.text.toString())
 
                 userDao?.insertUser(user)
 
