@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.utn.nerdypedia.R
@@ -64,38 +65,58 @@ class LoginFragment : Fragment() {
         userEditText = v.findViewById(R.id.userEditText)
         passEditText = v.findViewById(R.id.passEditText)
 
-        db = appDataBase.getAppDataBase(v.context)
-        userDao = db?.userDao()
 
+        /* Llamadas a viewModel */
+        //Limpio todos los flags
+        viewModel.onStart()
+
+        //Quisieron loguear
         loginButton.setOnClickListener {
-            if(userEditText.text.isEmpty() or passEditText.text.isEmpty()) {
+            viewModel.authUser(userEditText.text.toString(), passEditText.text.toString())
+        }
+
+        //Quieren crear un nuevo usuario
+        signInButton.setOnClickListener{
+            viewModel.signIn()
+        }
+
+        /* Observadores del viewModel */
+        //Los datos del usuario estan vacios
+        viewModel.flagEmptyData.observe(viewLifecycleOwner, Observer { result ->
+            if(result){
                 hideKeyboard()
                 Snackbar.make(v, "Complete both fields", Snackbar.LENGTH_LONG).show()
-            } else {
-                val user = userDao?.loadUserByUsername(userEditText.text.toString())
-
-                if(user == null){
-                    hideKeyboard()
-                    Snackbar.make(v, "The password you’ve entered is incorrect", Snackbar.LENGTH_LONG).show()
-                } else if(passEditText.text.toString() != user.password){
-                    hideKeyboard()
-                    Snackbar.make(v, "The password you’ve entered is incorrect", Snackbar.LENGTH_LONG).show()
-                } else {
-                    Session.user = user //El usuario que ingreso queda guardado en el singleton
-                    val intent = Intent(v.context, MainActivity::class.java)
-                    startActivity(intent)
-                    activity?.finish()
-                }
             }
-        }
+        })
 
-        signInButton.setOnClickListener{
-            var action = LoginFragmentDirections.actionLoginFragmentToSignInFragment()
-            v.findNavController().navigate(action)
-        }
+        //Usuario no encontrado
+        viewModel.flagUserUnknown.observe(viewLifecycleOwner, Observer { result ->
+            if(result){
+                hideKeyboard()
+                Snackbar.make(v, "The password you’ve entered is incorrect", Snackbar.LENGTH_LONG).show()
+            }
+        })
+
+        //Login con exito
+        viewModel.flagLogIn.observe(viewLifecycleOwner, Observer { result ->
+            if(result){
+                hideKeyboard()
+                val intent = Intent(v.context, MainActivity::class.java)
+                startActivity(intent)
+                activity?.finish()
+            }
+        })
+
+        //Nos vamos a la pantalla de sign in
+        viewModel.flagSignIn.observe(viewLifecycleOwner, Observer { result ->
+            if(result){
+                var action = LoginFragmentDirections.actionLoginFragmentToSignInFragment()
+                v.findNavController().navigate(action)
+            }
+        })
     }
 
-    fun Fragment.hideKeyboard() {
+    private fun Fragment.hideKeyboard() {
         view?.let { activity?.hideKeyboard(it) }
     }
 
@@ -103,7 +124,7 @@ class LoginFragment : Fragment() {
         hideKeyboard(currentFocus ?: View(this))
     }
 
-    fun Context.hideKeyboard(view: View) {
+    private fun Context.hideKeyboard(view: View) {
         val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
