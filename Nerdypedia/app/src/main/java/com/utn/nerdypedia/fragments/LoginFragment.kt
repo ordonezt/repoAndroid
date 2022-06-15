@@ -12,16 +12,11 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.utn.nerdypedia.R
 import com.utn.nerdypedia.activities.MainActivity
-import com.utn.nerdypedia.database.appDataBase
-import com.utn.nerdypedia.database.userDao
-import com.utn.nerdypedia.entities.Session
-import com.utn.nerdypedia.entities.User
 import com.utn.nerdypedia.viewmodels.LoginViewModel
 
 class LoginFragment : Fragment() {
@@ -37,9 +32,6 @@ class LoginFragment : Fragment() {
     private lateinit var signInButton : Button
     private lateinit var userEditText : EditText
     private lateinit var passEditText : EditText
-
-    private var db : appDataBase? = null
-    private var userDao : userDao? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

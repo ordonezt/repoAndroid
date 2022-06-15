@@ -12,15 +12,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
-import androidx.navigation.findNavController
+import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.utn.nerdypedia.R
 import com.utn.nerdypedia.activities.MainActivity
-import com.utn.nerdypedia.database.appDataBase
-import com.utn.nerdypedia.database.scientistDao
-import com.utn.nerdypedia.database.userDao
-import com.utn.nerdypedia.entities.Session
-import com.utn.nerdypedia.entities.User
 import com.utn.nerdypedia.viewmodels.SignInViewModel
 
 class SignInFragment : Fragment() {
@@ -39,9 +34,6 @@ class SignInFragment : Fragment() {
     private lateinit var passwordText2 : EditText
     private lateinit var emailText: EditText
 
-    private var db : appDataBase? = null
-    private var userDao : userDao? = null
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,9 +51,6 @@ class SignInFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        db = appDataBase.getAppDataBase(v.context)
-        userDao = db?.userDao()
-
         signInButton = v.findViewById(R.id.signInButton2)
         nameText = v.findViewById(R.id.nameText)
         usernameText = v.findViewById(R.id.userNameText)
@@ -69,37 +58,52 @@ class SignInFragment : Fragment() {
         passwordText2 = v.findViewById(R.id.passwordText2)
         emailText = v.findViewById(R.id.emailText)
 
+        /* Llamadas a viewModel */
+        //Quieren crear nuevo usuario
         signInButton.setOnClickListener {
-            if( nameText.text.isEmpty() or
-                usernameText.text.isEmpty() or
-                passwordText.text.isEmpty() or
-                passwordText2.text.isEmpty() or
-                emailText.text.isEmpty()) {
+            viewModel.signInUser(nameText.text.toString(), usernameText.text.toString(),
+                                 passwordText.text.toString(), passwordText2.text.toString(),
+                                 emailText.text.toString())
+        }
+
+        /* Observadores del viewModel */
+        //Los datos del usuario estan vacios
+        viewModel.flagEmptyData.observe(viewLifecycleOwner, Observer { result ->
+            if(result){
                 hideKeyboard()
                 Snackbar.make(v, "Complete all fields", Snackbar.LENGTH_LONG).show()
-            } else if(passwordText.text.toString() != passwordText2.text.toString()){
+            }
+        })
+
+        //Las contraseñas no coinciden
+        viewModel.flagPassError.observe(viewLifecycleOwner, Observer { result ->
+            if(result){
                 hideKeyboard()
                 Snackbar.make(v, "Both passwords must match", Snackbar.LENGTH_LONG).show()
-            } else if (userDao?.loadUserByUsername(usernameText.text.toString()) != null){
+            }
+        })
+
+        //El usuario esta repetido
+        viewModel.flagUserRepeated.observe(viewLifecycleOwner, Observer { result ->
+            if(result){
                 hideKeyboard()
                 Snackbar.make(v, "Username already exists", Snackbar.LENGTH_LONG).show()
-            } else {
-                val user = User(nameText.text.toString(),
-                                passwordText.text.toString(),
-                                usernameText.text.toString(),
-                                emailText.text.toString())
+            }
+        })
 
-                userDao?.insertUser(user)
-
-                Session.user = user //El usuario que ingreso queda guardado en el singleton
+        //Registro exitoso
+        viewModel.flagSignIn.observe(viewLifecycleOwner, Observer { result ->
+            if(result){
+                hideKeyboard()
                 val intent = Intent(v.context, MainActivity::class.java)
                 startActivity(intent)
                 activity?.finish()
             }
-        }
+        })
+
     }
 
-    fun Fragment.hideKeyboard() {
+    private fun Fragment.hideKeyboard() {
         view?.let { activity?.hideKeyboard(it) }
     }
 
@@ -107,7 +111,7 @@ class SignInFragment : Fragment() {
         hideKeyboard(currentFocus ?: View(this))
     }
 
-    fun Context.hideKeyboard(view: View) {
+    private fun Context.hideKeyboard(view: View) {
         val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }

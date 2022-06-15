@@ -1,10 +1,8 @@
 package com.utn.nerdypedia.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.utn.nerdypedia.database.appDataBase
 import com.utn.nerdypedia.database.userDao
 import com.utn.nerdypedia.entities.Session
