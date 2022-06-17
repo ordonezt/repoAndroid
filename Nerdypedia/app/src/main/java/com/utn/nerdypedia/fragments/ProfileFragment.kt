@@ -10,7 +10,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.navigation.findNavController
 import com.utn.nerdypedia.R
-import com.utn.nerdypedia.entities.Session
+import androidx.lifecycle.Observer
 import com.utn.nerdypedia.viewmodels.ProfileViewModel
 
 class ProfileFragment : Fragment() {
@@ -52,15 +52,32 @@ class ProfileFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        profileNameText.text = Session.user.name
-        profileUserNameText.text = Session.user.username
-        profileEmailText.text = Session.user.email
-//        profileLastLoginText.text = Session.user.lastLogin
+        viewModel.onStart()
 
         settingsBtn.setOnClickListener{
-            val action = ProfileFragmentDirections.actionProfileFragmentToSettingsActivity()
-            v.findNavController().navigate(action)
+            viewModel.goToSettings()
         }
 
+        viewModel.loadUserData()
+
+        /* Observadores del viewModel */
+        viewModel.nameText.observe(viewLifecycleOwner, Observer { name ->
+            profileNameText.text = name
+        })
+
+        viewModel.userNameText.observe(viewLifecycleOwner, Observer { userName ->
+            profileUserNameText.text = userName
+        })
+
+        viewModel.emailText.observe(viewLifecycleOwner, Observer { email ->
+            profileEmailText.text = email
+        })
+
+        viewModel.flagSettings.observe(viewLifecycleOwner, Observer { value ->
+            if(value){
+                val action = ProfileFragmentDirections.actionProfileFragmentToSettingsActivity()
+                v.findNavController().navigate(action)
+            }
+        })
     }
 }
