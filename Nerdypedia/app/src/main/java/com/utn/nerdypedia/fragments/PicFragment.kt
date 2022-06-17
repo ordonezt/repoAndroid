@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.Observer
 import com.utn.nerdypedia.R
 import com.utn.nerdypedia.viewmodels.PicViewModel
-import com.utn.nerdypedia.entities.Session
 
 class PicFragment : Fragment() {
 
@@ -41,15 +41,28 @@ class PicFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-
         detailsNameText = v.findViewById(R.id.detailsNameText)
         detailsAuthorText = v.findViewById(R.id.detailsAuthorText)
         detailsDateText = v.findViewById(R.id.detailsDateText)
         detailsUrlText = v.findViewById(R.id.detailsUrlText)
 
-        detailsNameText.text = "Name: " + Session.scientist.name
-        detailsAuthorText.text = "Author: " + Session.scientist.author
-        detailsDateText.text = "Date: " + Session.scientist.date
-        detailsUrlText.text = "URL: " + Session.scientist.biographyUrl
+        viewModel.loadItemData()
+
+        /* Observadores del viewModel */
+        viewModel.nameText.observe(viewLifecycleOwner, Observer { name ->
+            detailsNameText.text = name
+        })
+
+        viewModel.authorText.observe(viewLifecycleOwner, Observer { author ->
+            detailsAuthorText.text = author
+        })
+
+        viewModel.dateText.observe(viewLifecycleOwner, Observer { date ->
+            detailsDateText.text = date
+        })
+
+        viewModel.urlText.observe(viewLifecycleOwner, Observer { url ->
+            detailsUrlText.text = url
+        })
     }
 }
