@@ -11,13 +11,8 @@ import android.widget.EditText
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import com.utn.nerdypedia.R
-import com.utn.nerdypedia.database.scientistDao
-import com.utn.nerdypedia.database.appDataBase
-import com.utn.nerdypedia.entities.Scientist
-import com.utn.nerdypedia.entities.Session
 import com.utn.nerdypedia.viewmodels.AddViewModel
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import androidx.lifecycle.Observer
 
 class AddFragment : Fragment() {
 
@@ -31,9 +26,6 @@ class AddFragment : Fragment() {
     private lateinit var editTextName : EditText
     private lateinit var editTextBiography : EditText
     private lateinit var textViewTitle : TextView
-
-    private var db : appDataBase? = null
-    private var scientistDao : scientistDao? = null
 
     private lateinit var v: View
 
@@ -54,38 +46,49 @@ class AddFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        db = appDataBase.getAppDataBase(v.context)
-        scientistDao = db?.scientistDao()
+        viewModel.onStart()
 
         val scientist = AddFragmentArgs.fromBundle((requireArguments())).selectedScientist
-
         if(scientist != null){
-            textViewTitle.text = "Edit"
-            editTextName.setText(scientist.name)
-            editTextBiography.setText(scientist.biographyUrl)
+            viewModel.setEditView(scientist)
+        } else {
+            viewModel.setAddView()
         }
+
+        /* Observadores del viewModel */
+        //Los datos estan vacios
+        viewModel.flagEmptyData.observe(viewLifecycleOwner, Observer { result ->
+            if(result){
+                Snackbar.make(v, "Complete all fields", Snackbar.LENGTH_LONG).show()
+            }
+        })
+
+        viewModel.flagExit.observe(viewLifecycleOwner, Observer { result ->
+            if(result){
+                activity?.onBackPressed()
+            }
+        })
+
+        viewModel.nameText.observe(viewLifecycleOwner, Observer { name ->
+            editTextName.setText(name)
+        })
+
+        viewModel.urlText.observe(viewLifecycleOwner, Observer { url ->
+            editTextBiography.setText(url)
+        })
+
+        viewModel.titleText.observe(viewLifecycleOwner, Observer { title ->
+            textViewTitle.text = title
+        })
 
         buttonSave.setOnClickListener{
             val name = editTextName.text.toString()
             val biography = editTextBiography.text.toString()
 
-            if(name         != "" &&
-               biography    != ""){
-                   if(scientist != null) {
-                       scientist.name = name
-                       scientist.biographyUrl = biography
-                       scientistDao?.updateScientist(scientist)
-                   } else {
-                       val currentTime = LocalDateTime.now()
-                       val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-                       val date = currentTime.format(formatter)
-
-                       val author = Session.user.username
-                       scientistDao?.insertScientist(Scientist(name, biography, date, author))
-                   }
-                activity?.onBackPressed()
+            if(scientist != null){
+                viewModel.editScientist(name, biography, scientist)
             } else {
-                Snackbar.make(v, "Complete all fields", Snackbar.LENGTH_LONG).show()
+                viewModel.addScientist(name, biography)
             }
         }
     }
