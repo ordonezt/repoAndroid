@@ -54,7 +54,8 @@ class BiographyFragment : Fragment() {
 
         webView.settings.javaScriptEnabled = true
         webView.settings.setSupportZoom(true)
-        webView.loadUrl(Session.scientist.biographyUrl)
+//        webView.loadUrl(Session.scientist.biographyUrl)
+        Session.scientist?.let { webView.loadUrl(it.biographyUrl) }
     }
 
 /*    // if you press Back button this code will work

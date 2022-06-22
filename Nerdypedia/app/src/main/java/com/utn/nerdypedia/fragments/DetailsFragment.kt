@@ -49,7 +49,7 @@ class DetailsFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        val scientist = DetailsFragmentArgs.fromBundle(requireArguments()).selectedItem
+//        val scientist = DetailsFragmentArgs.fromBundle(requireArguments()).selectedItem
 
         viewPager.setAdapter(DetailsPagerAdapter(requireActivity()))
 

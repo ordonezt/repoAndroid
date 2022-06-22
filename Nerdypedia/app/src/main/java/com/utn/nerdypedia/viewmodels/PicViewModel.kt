@@ -11,9 +11,9 @@ class PicViewModel : ViewModel() {
     var urlText     = MutableLiveData<String>("")
 
     fun loadItemData(){
-        nameText.value      = "Name: "      + Session.scientist.name
-        authorText.value    = "Author: "    + Session.scientist.author
-        dateText.value      = "Date: "      + Session.scientist.date
-        urlText.value       = "URL: "       + Session.scientist.biographyUrl
+        nameText.value      = "Name: "      + (Session.scientist?.name ?: "")
+        authorText.value    = "Author: "    + (Session.scientist?.author ?: "")
+        dateText.value      = "Date: "      + (Session.scientist?.date ?: "")
+        urlText.value       = "URL: "       + (Session.scientist?.biographyUrl ?: "")
     }
 }

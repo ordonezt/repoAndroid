@@ -57,9 +57,23 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun saveScientist(name:String, url:String){
+        if(Session.scientist == null){
+            addScientist(name, url)
+        } else {
+            editScientist(name, url, Session.scientist!!)
+        }
+    }
+
     fun onStart(){
         flagEmptyData.value = false
         flagExit.value = false
+
+        if(Session.scientist == null){
+            setAddView()
+        } else {
+            setEditView(Session.scientist!!)
+        }
     }
 
 }
