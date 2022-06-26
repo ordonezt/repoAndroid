@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "694357144981",
+    "project_id": "electiva-android-2022",
+    "storage_bucket": "electiva-android-2022.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:694357144981:android:7830fd5d00b55bfa3c329c",
+        "android_client_info": {
+          "package_name": "com.utn.nerdypedia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "694357144981-91bnetq9pvpmd3clmfpnu8ivuklked7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCf8BRH48Ph2A8NeukrzEE5pAO2UEP2pz0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "694357144981-91bnetq9pvpmd3clmfpnu8ivuklked7l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
