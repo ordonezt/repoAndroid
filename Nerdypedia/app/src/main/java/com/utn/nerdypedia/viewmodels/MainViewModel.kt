@@ -3,22 +3,21 @@ package com.utn.nerdypedia.viewmodels
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.navigation.findNavController
+import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.utn.nerdypedia.adapters.ScientistAdapter
-import com.utn.nerdypedia.database.appDataBase
-import com.utn.nerdypedia.database.scientistDao
 import com.utn.nerdypedia.entities.Scientist
 import com.utn.nerdypedia.entities.Session
-import com.utn.nerdypedia.fragments.MainFragmentDirections
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
-    private var db : appDataBase? = appDataBase.getAppDataBase(application.applicationContext)
-    private var scientistDao : scientistDao? = db?.scientistDao()
+    val db = Firebase.firestore
 
     var prefs: SharedPreferences =
         application.getSharedPreferences("preference_key", Context.MODE_PRIVATE)
@@ -29,7 +28,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var flagGoEdit = MutableLiveData<Boolean>(false)
     var flagGoAdd = MutableLiveData<Boolean>(false)
 
-    private lateinit var list: MutableList<Scientist?>
     var scientistAdapter = MutableLiveData<ScientistAdapter>()
 
     fun onStart(){
@@ -44,7 +42,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             val editor = prefs.edit()
             editor.putBoolean("firstRun", false)
 
-            initScientistDataBase(scientistDao!!)
+//            initScientistDataBase()
         }
 
         val clickCard = fun (scientist : Scientist?) {
@@ -61,14 +59,40 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         val clickDelete = fun (scientist : Scientist?) {
-            scientistDao?.deleteScientist(scientist)
+            if (scientist != null) {
+                db.collection("scientists").document(scientist.id)
+                    .delete()
+                    .addOnSuccessListener { Log.d("DB firestore", "DocumentSnapshot successfully deleted!") }
+                    .addOnFailureListener { e -> Log.w("DB firestore", "Error deleting document", e) }
+            }
             onStart()
         }
 
         if(prefs.getBoolean("showPrivate", false)) {
-            list = scientistDao?.loadScientistByAuthor(Session.user.username)!!
+            db.collection("scientists")
+                .whereEqualTo("author", Session.user.username)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    updateAdapterList(snapshot, clickCard, clickEdit, clickDelete)
+                }
         } else {
-            list = scientistDao?.loadAllScientist()!!
+            db.collection("scientists")
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    updateAdapterList(snapshot, clickCard, clickEdit, clickDelete)
+                }
+        }
+    }
+
+    private fun updateAdapterList(
+        snapshot: QuerySnapshot,
+        clickCard: (Scientist?) -> Unit,
+        clickEdit: (Scientist?) -> Unit,
+        clickDelete: (Scientist?) -> Unit
+    ) {
+        val list = mutableListOf<Scientist?>()
+        for (doc in snapshot) {
+            list.add(doc.toObject(Scientist::class.java))
         }
         scientistAdapter.value = ScientistAdapter(list, clickCard, clickEdit, clickDelete)
     }
@@ -78,32 +102,44 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         flagGoAdd.value = true
     }
 
-    private fun initScientistDataBase(dao : scientistDao) {
+    private fun addScientistToDB(scientist: Scientist){
+        db.collection("scientists")
+            .add(scientist)
+            .addOnSuccessListener { documentReference ->
+                Log.d("DB firestore", "DocumentSnapshot added with ID: ${documentReference.id}")
+            }
+            .addOnFailureListener { e ->
+                Log.w("DB firestore", "Error adding document", e)
+            }
+    }
+
+    private fun initScientistDataBase() {
         val currentTime = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
         val date = currentTime.format(formatter)
 
-        dao.insertScientist(Scientist( "Albert Einstein","https://en.wikipedia.org/wiki/Albert_Einstein", date, "admin"))
-        dao.insertScientist(Scientist( "Stephen Hawking","https://en.wikipedia.org/wiki/Stephen_Hawking", date, "admin"))
-        dao.insertScientist(Scientist( "James Clerk Maxwell","https://en.wikipedia.org/wiki/James_Clerk_Maxwell", date, "admin"))
-        dao.insertScientist(Scientist("Marie Curie","https://en.wikipedia.org/wiki/Marie_Curie", date, "admin"))
-        dao.insertScientist(Scientist("Paul Dirac","https://en.wikipedia.org/wiki/Paul_Dirac", date, "admin"))
-        dao.insertScientist(Scientist("Carl Friedrich Gauss","https://en.wikipedia.org/wiki/Carl_Friedrich_Gauss", date, "admin"))
-        dao.insertScientist(Scientist("Bernhard Riemann","https://en.wikipedia.org/wiki/Bernhard_Riemann", date, "admin"))
-        dao.insertScientist(Scientist("Max Planck","https://en.wikipedia.org/wiki/Max_Planck", date, "admin"))
-        dao.insertScientist(Scientist("Erwin Schrödinger","https://en.wikipedia.org/wiki/Erwin_Schr%C3%B6dinger", date, "admin"))
-        dao.insertScientist(Scientist("Richard Feynman","https://en.wikipedia.org/wiki/Richard_Feynman", date, "admin"))
-        dao.insertScientist(Scientist("Werner Heisenberg","https://en.wikipedia.org/wiki/Werner_Heisenberg", date, "admin"))
-        dao.insertScientist(Scientist("Enrico Fermi","https://en.wikipedia.org/wiki/Enrico_Fermi", date, "admin"))
-        dao.insertScientist(Scientist("Niels Bohr","https://en.wikipedia.org/wiki/Niels_Bohr", date, "admin"))
-        dao.insertScientist(Scientist("Ernest Rutherford","https://en.wikipedia.org/wiki/Ernest_Rutherford", date, "admin"))
-        dao.insertScientist(Scientist("Michael Faraday","https://en.wikipedia.org/wiki/Michael_Faraday", date, "admin"))
-        dao.insertScientist(Scientist("Nikola Tesla","https://en.wikipedia.org/wiki/Nikola_Tesla", date, "admin"))
-        dao.insertScientist(Scientist("Thomas Edison","https://en.wikipedia.org/wiki/Thomas_Edison", date, "admin"))
-        dao.insertScientist(Scientist("Galileo Galilei","https://en.wikipedia.org/wiki/Galileo_Galilei", date, "admin"))
-        dao.insertScientist(Scientist("Isaac Newton","https://en.wikipedia.org/wiki/Isaac_Newton", date, "admin"))
-        dao.insertScientist(Scientist("Alan Turing","https://en.wikipedia.org/wiki/Alan_Turing", date, "admin"))
-        dao.insertScientist(Scientist("Pierre de Fermat","https://en.wikipedia.org/wiki/Pierre_de_Fermat", date, "admin"))
-        dao.insertScientist(Scientist("J. Robert Oppenheimer","https://en.wikipedia.org/wiki/J._Robert_Oppenheimer", date, "admin"))
+        addScientistToDB(Scientist( "Albert Einstein","https://en.wikipedia.org/wiki/Albert_Einstein", date, "admin"))
+        addScientistToDB(Scientist( "Albert Einstein","https://en.wikipedia.org/wiki/Albert_Einstein", date, "admin"))
+        addScientistToDB(Scientist( "Stephen Hawking","https://en.wikipedia.org/wiki/Stephen_Hawking", date, "admin"))
+        addScientistToDB(Scientist( "James Clerk Maxwell","https://en.wikipedia.org/wiki/James_Clerk_Maxwell", date, "admin"))
+        addScientistToDB(Scientist("Marie Curie","https://en.wikipedia.org/wiki/Marie_Curie", date, "admin"))
+        addScientistToDB(Scientist("Paul Dirac","https://en.wikipedia.org/wiki/Paul_Dirac", date, "admin"))
+        addScientistToDB(Scientist("Carl Friedrich Gauss","https://en.wikipedia.org/wiki/Carl_Friedrich_Gauss", date, "admin"))
+        addScientistToDB(Scientist("Bernhard Riemann","https://en.wikipedia.org/wiki/Bernhard_Riemann", date, "admin"))
+        addScientistToDB(Scientist("Max Planck","https://en.wikipedia.org/wiki/Max_Planck", date, "admin"))
+        addScientistToDB(Scientist("Erwin Schrödinger","https://en.wikipedia.org/wiki/Erwin_Schr%C3%B6dinger", date, "admin"))
+        addScientistToDB(Scientist("Richard Feynman","https://en.wikipedia.org/wiki/Richard_Feynman", date, "admin"))
+        addScientistToDB(Scientist("Werner Heisenberg","https://en.wikipedia.org/wiki/Werner_Heisenberg", date, "admin"))
+        addScientistToDB(Scientist("Enrico Fermi","https://en.wikipedia.org/wiki/Enrico_Fermi", date, "admin"))
+        addScientistToDB(Scientist("Niels Bohr","https://en.wikipedia.org/wiki/Niels_Bohr", date, "admin"))
+        addScientistToDB(Scientist("Ernest Rutherford","https://en.wikipedia.org/wiki/Ernest_Rutherford", date, "admin"))
+        addScientistToDB(Scientist("Michael Faraday","https://en.wikipedia.org/wiki/Michael_Faraday", date, "admin"))
+        addScientistToDB(Scientist("Nikola Tesla","https://en.wikipedia.org/wiki/Nikola_Tesla", date, "admin"))
+        addScientistToDB(Scientist("Thomas Edison","https://en.wikipedia.org/wiki/Thomas_Edison", date, "admin"))
+        addScientistToDB(Scientist("Galileo Galilei","https://en.wikipedia.org/wiki/Galileo_Galilei", date, "admin"))
+        addScientistToDB(Scientist("Isaac Newton","https://en.wikipedia.org/wiki/Isaac_Newton", date, "admin"))
+        addScientistToDB(Scientist("Alan Turing","https://en.wikipedia.org/wiki/Alan_Turing", date, "admin"))
+        addScientistToDB(Scientist("Pierre de Fermat","https://en.wikipedia.org/wiki/Pierre_de_Fermat", date, "admin"))
+        addScientistToDB(Scientist("J. Robert Oppenheimer","https://en.wikipedia.org/wiki/J._Robert_Oppenheimer", date, "admin"))
     }
 }

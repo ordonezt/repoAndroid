@@ -48,13 +48,6 @@ class AddFragment : Fragment() {
 
         viewModel.onStart()
 
-//        val scientist = AddFragmentArgs.fromBundle((requireArguments())).selectedScientist
-//        if(scientist != null){
-//            viewModel.setEditView(scientist)
-//        } else {
-//            viewModel.setAddView()
-//        }
-
         /* Observadores del viewModel */
         //Los datos estan vacios
         viewModel.flagEmptyData.observe(viewLifecycleOwner, Observer { result ->
@@ -86,11 +79,6 @@ class AddFragment : Fragment() {
             val biography = editTextBiography.text.toString()
 
             viewModel.saveScientist(name, biography)
-//            if(scientist != null){
-//                viewModel.editScientist(name, biography, scientist)
-//            } else {
-//                viewModel.addScientist(name, biography)
-//            }
         }
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {

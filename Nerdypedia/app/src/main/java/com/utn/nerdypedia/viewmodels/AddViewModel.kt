@@ -1,8 +1,11 @@
 package com.utn.nerdypedia.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.utn.nerdypedia.database.appDataBase
 import com.utn.nerdypedia.database.scientistDao
 import com.utn.nerdypedia.entities.Scientist
@@ -11,8 +14,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class AddViewModel(application: Application) : AndroidViewModel(application) {
-    private var db : appDataBase? = appDataBase.getAppDataBase(application.applicationContext)
-    private var scientistDao : scientistDao? = db?.scientistDao()
+    private val db = Firebase.firestore
 
     var titleText = MutableLiveData<String>("")
     var nameText = MutableLiveData<String>("")
@@ -21,18 +23,18 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
     var flagEmptyData = MutableLiveData<Boolean>(false)
     var flagExit = MutableLiveData<Boolean>(false)
 
-    fun setEditView(scientist:Scientist){
+    private fun setEditView(scientist:Scientist){
         titleText.value = "Edit"
 
         nameText.value = scientist.name
         urlText.value = scientist.biographyUrl
     }
 
-    fun setAddView(){
+    private fun setAddView(){
         titleText.value = "Add"
     }
 
-    fun addScientist(name:String, url:String){
+    private fun addScientist(name:String, url:String){
         if(name.isEmpty() || url.isEmpty()){
             flagEmptyData.value = true
         }else{
@@ -41,19 +43,36 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
             val date = currentTime.format(formatter)
 
             val author = Session.user.username
-            scientistDao?.insertScientist(Scientist(name, url, date, author))
+            val sct = Scientist(name, url, date, author)
+            db.collection("scientists")
+                .add(sct)
+                .addOnSuccessListener { documentReference ->
+                    Log.d("DB firestore", "DocumentSnapshot added with ID: ${documentReference.id}")
+                }
+                .addOnFailureListener { e ->
+                    Log.w("DB firestore", "Error adding document", e)
+                }
+
             flagExit.value = true
         }
     }
 
-    fun editScientist(name:String, url:String, scientist: Scientist){
+    private fun editScientist(name:String, url:String, scientist: Scientist){
         if(name.isEmpty() || url.isEmpty()){
             flagEmptyData.value = true
         }else {
             scientist.name = name
             scientist.biographyUrl = url
-            scientistDao?.updateScientist(scientist)
-            flagExit.value = true
+            db.collection("scientists").document(scientist.id)
+                .set(scientist)
+                .addOnSuccessListener {
+                    Log.d("DB firestore", "DocumentSnapshot added with ID: ${scientist.id}")
+                    flagExit.value = true
+                }
+                .addOnFailureListener { e ->
+                    Log.w("DB firestore", "Error adding document", e)
+                    flagExit.value = true
+                }
         }
     }
 
