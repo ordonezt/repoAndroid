@@ -4,12 +4,17 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.utn.nerdypedia.adapters.ScientistAdapter
 import com.utn.nerdypedia.database.appDataBase
 import com.utn.nerdypedia.database.scientistDao
 import com.utn.nerdypedia.entities.Scientist
 import com.utn.nerdypedia.entities.Session
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -43,17 +48,12 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
             val date = currentTime.format(formatter)
 
             val author = Session.user.username
-            val sct = Scientist(name, url, date, author)
-            db.collection("scientists")
-                .add(sct)
-                .addOnSuccessListener { documentReference ->
-                    Log.d("DB firestore", "DocumentSnapshot added with ID: ${documentReference.id}")
-                }
-                .addOnFailureListener { e ->
-                    Log.w("DB firestore", "Error adding document", e)
-                }
-
-            flagExit.value = true
+            val scientist = Scientist(name, url, date, author)
+            viewModelScope.launch(Dispatchers.Main) {
+                addScientistToDB(scientist)
+                flagExit.value = true
+                //TODO hacer la opcion de error
+            }
         }
     }
 
@@ -63,16 +63,29 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
         }else {
             scientist.name = name
             scientist.biographyUrl = url
-            db.collection("scientists").document(scientist.id)
-                .set(scientist)
-                .addOnSuccessListener {
-                    Log.d("DB firestore", "DocumentSnapshot added with ID: ${scientist.id}")
-                    flagExit.value = true
-                }
-                .addOnFailureListener { e ->
-                    Log.w("DB firestore", "Error adding document", e)
-                    flagExit.value = true
-                }
+            viewModelScope.launch(Dispatchers.Main) {
+                updateScientistToDB(scientist)
+                flagExit.value = true
+                //TODO hacer la opcion de error
+            }
+        }
+    }
+
+    private suspend fun addScientistToDB(scientist: Scientist){
+        try{
+            db.collection("scientists").add(scientist).await()
+        } catch (e: Exception){
+            //TODO
+            Log.w("DB firestore", "Error adding document", e)
+        }
+    }
+
+    suspend fun updateScientistToDB(scientist: Scientist){
+        try{
+            db.collection("scientists").document(scientist.id).set(scientist).await()
+        } catch (e: Exception){
+            //TODO
+            Log.w("DB firestore", "Error adding document", e)
         }
     }
 
