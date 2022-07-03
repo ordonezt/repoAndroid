@@ -67,27 +67,11 @@ class SignInFragment : Fragment() {
         }
 
         /* Observadores del viewModel */
-        //Los datos del usuario estan vacios
-        viewModel.flagEmptyData.observe(viewLifecycleOwner, Observer { result ->
-            if(result){
+        //Error en la creacion del usuario
+        viewModel.wrongSignInText.observe(viewLifecycleOwner, Observer { text ->
+            if(text.isNotEmpty()) {
                 hideKeyboard()
-                Snackbar.make(v, "Complete all fields", Snackbar.LENGTH_LONG).show()
-            }
-        })
-
-        //Las contraseñas no coinciden
-        viewModel.flagPassError.observe(viewLifecycleOwner, Observer { result ->
-            if(result){
-                hideKeyboard()
-                Snackbar.make(v, "Both passwords must match", Snackbar.LENGTH_LONG).show()
-            }
-        })
-
-        //El usuario esta repetido
-        viewModel.flagUserRepeated.observe(viewLifecycleOwner, Observer { result ->
-            if(result){
-                hideKeyboard()
-                Snackbar.make(v, "Username already exists", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(v, text, Snackbar.LENGTH_LONG).show()
             }
         })
 
