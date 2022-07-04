@@ -6,9 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.utn.nerdypedia.database.appDataBase
-import com.utn.nerdypedia.database.userDao
 import com.utn.nerdypedia.entities.Session
 import com.utn.nerdypedia.entities.User
 import kotlinx.coroutines.Dispatchers
@@ -16,8 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class SignInViewModel(application: Application) : AndroidViewModel(application) {
-
-    private var db : appDataBase? = appDataBase.getAppDataBase(application.applicationContext)
+    private val db = Firebase.firestore
     private var auth = Firebase.auth
 
     var flagPassError = MutableLiveData<Boolean>(false)
@@ -38,14 +36,16 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
             flagPassError.value = true
             wrongSignInText.value = "Both passwords must match"
         } else {
-            val user = User(name, pass, username, email)
-
             viewModelScope.launch(Dispatchers.Main) {
-                var ret = createUser(email, pass)
-                //Session.user = auth.currentUser TODO
+                val ret = createUser(email, pass)
                 if(ret == null) {
-                    Session.user = user //El usuario que ingreso queda guardado en el singleton
-                    flagSignIn.value = true
+                    val firebaseUser = auth.currentUser
+                    if(firebaseUser != null){
+                        val user = User(firebaseUser.uid, name, username, email, "", "")
+                        uploadUserDB(user)
+                        Session.user = user //El usuario que ingreso queda guardado en el singleton
+                        flagSignIn.value = true
+                    }
                 } else {
                     wrongSignInText.value = ret.message.toString()
                 }
@@ -54,7 +54,6 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private suspend fun createUser(email: String, password: String): Exception? {
-        val user = User("name", password, "username", email)
         try {
             auth.createUserWithEmailAndPassword(email, password).await()
             return null
@@ -64,4 +63,14 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
             return e
         }
     }
+
+    private suspend fun uploadUserDB(user: User){
+        try{
+            db.collection("users").add(user).await()
+        } catch (e: Exception){
+            //TODO
+            Log.w("DB firestore", "Error adding document", e)
+        }
+    }
+
 }

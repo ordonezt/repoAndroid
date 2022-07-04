@@ -7,9 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.utn.nerdypedia.adapters.ScientistAdapter
-import com.utn.nerdypedia.database.appDataBase
-import com.utn.nerdypedia.database.scientistDao
 import com.utn.nerdypedia.entities.Scientist
 import com.utn.nerdypedia.entities.Session
 import kotlinx.coroutines.Dispatchers

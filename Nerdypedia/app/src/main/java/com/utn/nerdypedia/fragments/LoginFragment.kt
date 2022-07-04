@@ -54,7 +54,7 @@ class LoginFragment : Fragment() {
 
         loginButton = v.findViewById(R.id.loginButton)
         signInButton = v.findViewById(R.id.signInButton)
-        userEditText = v.findViewById(R.id.userEditText)
+        userEditText = v.findViewById(R.id.emailEditText)
         passEditText = v.findViewById(R.id.passEditText)
 
 
@@ -74,18 +74,10 @@ class LoginFragment : Fragment() {
 
         /* Observadores del viewModel */
         //Los datos del usuario estan vacios
-        viewModel.flagEmptyData.observe(viewLifecycleOwner, Observer { result ->
-            if(result){
+        viewModel.wrongLogInText.observe(viewLifecycleOwner, Observer { text ->
+            if(text.isNotEmpty()){
                 hideKeyboard()
-                Snackbar.make(v, "Complete both fields", Snackbar.LENGTH_LONG).show()
-            }
-        })
-
-        //Usuario no encontrado
-        viewModel.flagUserUnknown.observe(viewLifecycleOwner, Observer { result ->
-            if(result){
-                hideKeyboard()
-                Snackbar.make(v, "The password you’ve entered is incorrect", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(v, text, Snackbar.LENGTH_LONG).show()
             }
         })
 
