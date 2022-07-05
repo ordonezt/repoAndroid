@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import com.utn.nerdypedia.entities.ProfileViewState
+import com.utn.nerdypedia.entities.ViewState
 import com.utn.nerdypedia.entities.Session
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     var nameText        = MutableLiveData<String>("")
     var userNameText    = MutableLiveData<String>("")
     var emailText       = MutableLiveData<String>("")
-    var viewState       = MutableLiveData<ProfileViewState>(ProfileViewState.RESET)
+    var viewState       = MutableLiveData<ViewState>(ViewState.RESET)
 
     var picURI: Uri = Uri.parse("@drawable/ic_baseline_person_24_black")
     lateinit var failtText : String
@@ -35,13 +35,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         emailText.value     = Session.user.email
 
         viewModelScope.launch(Dispatchers.Main) {
-            viewState.value = ProfileViewState.LOADING
+            viewState.value = ViewState.LOADING
             if(downloadUserPic()){
-                viewState.value = ProfileViewState.SUCCESS
+                viewState.value = ViewState.SUCCESS
             } else {
                 picURI = Uri.parse("@drawable/ic_baseline_person_24_black")
                 failtText = "Unable to get profile picture"
-                viewState.value = ProfileViewState.FAILURE
+                viewState.value = ViewState.FAILURE
             }
         }
     }
@@ -64,13 +64,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         flagGoToGallery.value = false
         Log.d("Gallery pick", uri.toString())
         viewModelScope.launch(Dispatchers.Main) {
-            viewState.value = ProfileViewState.LOADING
+            viewState.value = ViewState.LOADING
             if(uploadUserPic(uri)){
                 picURI = uri
-                viewState.value = ProfileViewState.SUCCESS
+                viewState.value = ViewState.SUCCESS
             }else{
                 failtText = "Unable to set profile picture"
-                viewState.value = ProfileViewState.FAILURE
+                viewState.value = ViewState.FAILURE
             }
         }
     }

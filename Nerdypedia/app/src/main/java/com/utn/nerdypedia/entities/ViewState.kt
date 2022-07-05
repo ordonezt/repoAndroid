@@ -1,5 +1,5 @@
 package com.utn.nerdypedia.entities
 
-enum class ProfileViewState {
+enum class ViewState {
     RESET, LOADING, SUCCESS, FAILURE
 }

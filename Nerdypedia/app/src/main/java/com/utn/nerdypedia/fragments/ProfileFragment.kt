@@ -13,8 +13,8 @@ import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.utn.nerdypedia.R
+import com.utn.nerdypedia.entities.ViewState
 import com.utn.nerdypedia.viewmodels.ProfileViewModel
-import com.utn.nerdypedia.viewmodels.ProfileViewState
 
 
 class ProfileFragment : Fragment() {
@@ -107,21 +107,21 @@ class ProfileFragment : Fragment() {
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { state ->
             when(state){
-                ProfileViewState.RESET -> {
+                ViewState.RESET -> {
                     viewModel.loadUserData()
                 }
-                ProfileViewState.LOADING -> {
+                ViewState.LOADING -> {
                     progressBarProfile.visibility   = View.VISIBLE
                     imageView.visibility            = View.INVISIBLE
                     btn.visibility                  = View.INVISIBLE
                 }
-                ProfileViewState.SUCCESS -> {
+                ViewState.SUCCESS -> {
                     progressBarProfile.visibility   = View.INVISIBLE
                     imageView.visibility            = View.VISIBLE
                     btn.visibility                  = View.VISIBLE
                     Picasso.get().load(viewModel.picURI).into(imageView)
                 }
-                ProfileViewState.FAILURE -> {
+                ViewState.FAILURE -> {
                     progressBarProfile.visibility   = View.INVISIBLE
                     imageView.visibility            = View.VISIBLE
                     btn.visibility                  = View.VISIBLE

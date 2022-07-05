@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.utn.nerdypedia.R
 import com.utn.nerdypedia.viewmodels.MainViewModel
 import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
+import com.utn.nerdypedia.entities.ViewState
 
 class MainFragment : Fragment() {
 
@@ -22,13 +25,11 @@ class MainFragment : Fragment() {
     }
 
     private lateinit var viewModel: MainViewModel
-
     private lateinit var nameTextView: TextView
     private lateinit var recyclerScientists : RecyclerView
-
     private lateinit var fab : FloatingActionButton
-
     private lateinit var listEmptyText: TextView
+    private lateinit var progressBarMain: ProgressBar
 
     private lateinit var v: View
 
@@ -42,6 +43,7 @@ class MainFragment : Fragment() {
         recyclerScientists = v.findViewById(R.id.recyclerScientists)
         fab = v.findViewById(R.id.fab)
         listEmptyText = v.findViewById(R.id.listEmptyText)
+        progressBarMain = v.findViewById(R.id.progressBarMain)
 
         return v
     }
@@ -93,6 +95,30 @@ class MainFragment : Fragment() {
             } else {
                 listEmptyText.visibility = View.VISIBLE
                 recyclerScientists.visibility = View.INVISIBLE
+            }
+        })
+
+        viewModel.viewState.observe(viewLifecycleOwner, Observer { state ->
+            when(state){
+                ViewState.LOADING -> {
+                    progressBarMain.visibility      = View.VISIBLE
+                    listEmptyText.visibility        = View.INVISIBLE
+                    recyclerScientists.visibility   = View.INVISIBLE
+                    fab.visibility                  = View.INVISIBLE
+                }
+                ViewState.FAILURE -> {
+                    progressBarMain.visibility      = View.INVISIBLE
+                    listEmptyText.visibility        = View.INVISIBLE
+                    recyclerScientists.visibility   = View.VISIBLE
+                    fab.visibility                  = View.VISIBLE
+                    Snackbar.make(v, viewModel.failureText, Snackbar.LENGTH_LONG).show()
+                }
+                ViewState.SUCCESS -> {
+                    progressBarMain.visibility      = View.INVISIBLE
+                    listEmptyText.visibility        = View.INVISIBLE
+                    recyclerScientists.visibility   = View.VISIBLE
+                    fab.visibility                  = View.VISIBLE
+                }
             }
         })
     }

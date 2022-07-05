@@ -14,6 +14,7 @@ import com.google.firebase.ktx.Firebase
 import com.utn.nerdypedia.adapters.ScientistAdapter
 import com.utn.nerdypedia.entities.Scientist
 import com.utn.nerdypedia.entities.Session
+import com.utn.nerdypedia.entities.ViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -34,6 +35,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var flagGoAdd = MutableLiveData<Boolean>(false)
 
     var scientistAdapter = MutableLiveData<ScientistAdapter>()
+
+    var viewState = MutableLiveData<ViewState>(ViewState.RESET)
+
+    lateinit var failureText: String
 
     fun onStart(){
         flagGoEdit.value = false
@@ -70,8 +75,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val clickDelete = fun(scientist: Scientist?) {
             if (scientist != null) {
                 viewModelScope.launch(Dispatchers.Main) {
-                    deleteScientistFromDB(scientist)
-                    onStart()
+                    viewState.value = ViewState.LOADING
+                    if(deleteScientistFromDB(scientist)){
+                        onStart()
+                        viewState.value = ViewState.SUCCESS
+                    } else {
+                        failureText = "Unable to delete scientist"
+                        viewState.value = ViewState.FAILURE
+                    }
                 }
             }
         }
@@ -84,21 +95,27 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 db.collection("scientists")
             }
         viewModelScope.launch(Dispatchers.Main) {
+            viewState.value = ViewState.LOADING
             var list = getScientistListFromQuery(query)
-            scientistAdapter.value = ScientistAdapter(list, clickCard, clickEdit, clickDelete)
+            if(list == null){
+                //TODO
+                failureText = "Unable to get scientists"
+                viewState.value = ViewState.FAILURE
+            } else {
+                scientistAdapter.value = ScientistAdapter(list, clickCard, clickEdit, clickDelete)
+                viewState.value = ViewState.SUCCESS
+            }
         }
     }
 
-    private suspend fun getScientistListFromQuery(query: Query): MutableList<Scientist?> {
-        var list = mutableListOf<Scientist?>()
-        try{
+    private suspend fun getScientistListFromQuery(query: Query): MutableList<Scientist?>? {
+         return try{
             val snapshot = query.get().await()
-            list = snapshotToScientistList(snapshot)
+            snapshotToScientistList(snapshot)
         } catch (e: Exception) {
-            //TODO
             Log.w("DB firestore", "Error deleting document", e)
+            null
         }
-        return list
     }
 
     private fun snapshotToScientistList(snapshot: QuerySnapshot) : MutableList<Scientist?> {
@@ -154,13 +171,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    suspend fun deleteScientistFromDB(scientist: Scientist){
-        try{
+    suspend fun deleteScientistFromDB(scientist: Scientist): Boolean{
+        return try{
             db.collection("scientists").document(scientist.id)
                 .delete().await()
+            true
         } catch (e: Exception) {
-            //TODO
             Log.w("DB firestore", "Error deleting document", e)
+            false
         }
     }
 }
