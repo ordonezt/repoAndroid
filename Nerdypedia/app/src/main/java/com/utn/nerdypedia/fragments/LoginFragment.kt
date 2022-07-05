@@ -78,14 +78,6 @@ class LoginFragment : Fragment() {
         }
 
         /* Observadores del viewModel */
-//        //Los datos del usuario estan vacios
-//        viewModel.wrongLogInText.observe(viewLifecycleOwner, Observer { text ->
-//            if(text.isNotEmpty()){
-//                hideKeyboard()
-//                Snackbar.make(v, text, Snackbar.LENGTH_LONG).show()
-//            }
-//        })
-
         //Login con exito
         viewModel.flagLogIn.observe(viewLifecycleOwner, Observer { result ->
             if(result){

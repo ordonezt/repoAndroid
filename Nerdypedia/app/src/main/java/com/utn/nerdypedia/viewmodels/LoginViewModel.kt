@@ -20,23 +20,18 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     var flagLogIn = MutableLiveData<Boolean>(false)
     var flagSignIn = MutableLiveData<Boolean>(false)
-    var flagEmptyData = MutableLiveData<Boolean>(false)
-    var flagUserUnknown = MutableLiveData<Boolean>(false)
-    var wrongLogInText = MutableLiveData<String>("")
     var viewState = MutableLiveData<ViewState>(ViewState.RESET)
 
     lateinit var failureText: String
 
     fun authUser(email : String, password : String){
         if (email.isEmpty()) {
-            wrongLogInText.value = "Complete both fields" //TODO borrar
             failureText = "Complete both fields"
             viewState.value = ViewState.FAILURE
             return
         }
 
         if (password.isEmpty()) {
-            wrongLogInText.value = "The password you’ve entered is incorrect" //TODO poner igual que la de abajo
             failureText = "The password you’ve entered is incorrect" //TODO poner igual que la de abajo
             viewState.value = ViewState.FAILURE
             return
@@ -58,7 +53,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 //                Session.user = auth.currentUser?.let { getUserFromDB(it.uid) }!!
 //                flagLogIn.value = true
             } else {
-                wrongLogInText.value = ret.message.toString()
                 failureText = ret.message.toString()
                 viewState.value = ViewState.FAILURE
             }
@@ -90,7 +84,5 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     fun onStart(){
         flagLogIn.value = false
         flagSignIn.value = false
-        flagEmptyData.value = false
-        flagUserUnknown.value = false
     }
 }
