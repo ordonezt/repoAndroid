@@ -4,11 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.utn.nerdypedia.R
 import com.utn.nerdypedia.viewmodels.ProfileViewModel
 
@@ -20,8 +24,15 @@ class ProfileFragment : Fragment() {
     }
 
     private lateinit var viewModel: ProfileViewModel
+
     private lateinit var imageView: ImageView
     private lateinit var btn: ImageButton
+
+    private lateinit var profileNameText : TextView
+    private lateinit var profileUserNameText : TextView
+    private lateinit var profileEmailText : TextView
+    private lateinit var settingsBtn : Button
+
     private lateinit var v: View
 
     override fun onCreateView(
@@ -32,6 +43,11 @@ class ProfileFragment : Fragment() {
 
         imageView = v.findViewById(R.id.userPic)
         btn = v.findViewById(R.id.changePicBtn)
+
+        profileNameText = v.findViewById(R.id.profileNameText)
+        profileUserNameText = v.findViewById(R.id.profileUserNameText)
+        profileEmailText = v.findViewById(R.id.profileEmailText)
+        settingsBtn = v.findViewById(R.id.settingsBtn)
 
         return v
     }
@@ -45,9 +61,37 @@ class ProfileFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        viewModel.onStart()
+
+        settingsBtn.setOnClickListener{
+            viewModel.goToSettings()
+        }
+
         btn.setOnClickListener{
             openFileChooser()
         }
+
+        viewModel.loadUserData()
+
+        /* Observadores del viewModel */
+        viewModel.nameText.observe(viewLifecycleOwner, Observer { name ->
+            profileNameText.text = name
+        })
+
+        viewModel.userNameText.observe(viewLifecycleOwner, Observer { userName ->
+            profileUserNameText.text = userName
+        })
+
+        viewModel.emailText.observe(viewLifecycleOwner, Observer { email ->
+            profileEmailText.text = email
+        })
+
+        viewModel.flagSettings.observe(viewLifecycleOwner, Observer { value ->
+            if(value){
+                val action = ProfileFragmentDirections.actionProfileFragmentToSettingsActivity()
+                v.findNavController().navigate(action)
+            }
+        })
     }
 
     private val fileChooserContract = registerForActivityResult(ActivityResultContracts.GetContent()) { imageUri ->
