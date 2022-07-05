@@ -9,6 +9,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.utn.nerdypedia.entities.Scientist
 import com.utn.nerdypedia.entities.Session
+import com.utn.nerdypedia.entities.ViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -22,8 +23,9 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
     var nameText = MutableLiveData<String>("")
     var urlText = MutableLiveData<String>("")
 
-    var flagEmptyData = MutableLiveData<Boolean>(false)
     var flagExit = MutableLiveData<Boolean>(false)
+    var viewState = MutableLiveData<ViewState>(ViewState.RESET)
+    lateinit var failureText: String
 
     private fun setEditView(scientist:Scientist){
         titleText.value = "Edit"
@@ -38,7 +40,8 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun addScientist(name:String, url:String){
         if(name.isEmpty() || url.isEmpty()){
-            flagEmptyData.value = true
+            failureText = "Complete all fields"
+            viewState.value = ViewState.FAILURE
         }else{
             val currentTime = LocalDateTime.now()
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
@@ -47,8 +50,13 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
             val author = Session.user.username
             val scientist = Scientist(name, url, date, author)
             viewModelScope.launch(Dispatchers.Main) {
-                addScientistToDB(scientist)
-                flagExit.value = true
+                viewState.value = ViewState.LOADING
+                if(addScientistToDB(scientist)) {
+                    flagExit.value = true
+                } else {
+                    failureText = "Unable to add Scientist"
+                    viewState.value = ViewState.FAILURE
+                }
                 //TODO hacer la opcion de error
             }
         }
@@ -56,33 +64,40 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun editScientist(name:String, url:String, scientist: Scientist){
         if(name.isEmpty() || url.isEmpty()){
-            flagEmptyData.value = true
+            failureText = "Complete all fields"
+            viewState.value = ViewState.FAILURE
         }else {
             scientist.name = name
             scientist.biographyUrl = url
             viewModelScope.launch(Dispatchers.Main) {
-                updateScientistToDB(scientist)
-                flagExit.value = true
-                //TODO hacer la opcion de error
+                viewState.value = ViewState.LOADING
+                if(updateScientistToDB(scientist)) {
+                    flagExit.value = true
+                } else {
+                    failureText = "Unable to edit Scientist"
+                    viewState.value = ViewState.FAILURE
+                }
             }
         }
     }
 
-    private suspend fun addScientistToDB(scientist: Scientist){
-        try{
+    private suspend fun addScientistToDB(scientist: Scientist): Boolean{
+        return try{
             db.collection("scientists").add(scientist).await()
+            true
         } catch (e: Exception){
-            //TODO
             Log.w("DB firestore", "Error adding document", e)
+            false
         }
     }
 
-    suspend fun updateScientistToDB(scientist: Scientist){
-        try{
+    suspend fun updateScientistToDB(scientist: Scientist): Boolean{
+        return try{
             db.collection("scientists").document(scientist.id).set(scientist).await()
+            true
         } catch (e: Exception){
-            //TODO
             Log.w("DB firestore", "Error adding document", e)
+            false
         }
     }
 
@@ -95,7 +110,6 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun onStart(){
-        flagEmptyData.value = false
         flagExit.value = false
 
         if(Session.scientist == null){
