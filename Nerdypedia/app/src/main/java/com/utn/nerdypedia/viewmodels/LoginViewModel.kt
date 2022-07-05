@@ -9,6 +9,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.utn.nerdypedia.entities.Session
 import com.utn.nerdypedia.entities.User
+import com.utn.nerdypedia.entities.ViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -22,39 +23,48 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     var flagEmptyData = MutableLiveData<Boolean>(false)
     var flagUserUnknown = MutableLiveData<Boolean>(false)
     var wrongLogInText = MutableLiveData<String>("")
+    var viewState = MutableLiveData<ViewState>(ViewState.RESET)
+
+    lateinit var failureText: String
 
     fun authUser(email : String, password : String){
         if (email.isEmpty()) {
-            wrongLogInText.value = "Complete both fields"
+            wrongLogInText.value = "Complete both fields" //TODO borrar
+            failureText = "Complete both fields"
+            viewState.value = ViewState.FAILURE
             return
         }
 
         if (password.isEmpty()) {
             wrongLogInText.value = "The password you’ve entered is incorrect" //TODO poner igual que la de abajo
+            failureText = "The password you’ve entered is incorrect" //TODO poner igual que la de abajo
+            viewState.value = ViewState.FAILURE
             return
         }
 
         viewModelScope.launch(Dispatchers.Main) {
-            var ret = signInUser(email, password)
+            viewState.value = ViewState.LOADING
+
+            val ret = signInUser(email, password)
             if(ret == null){
-                //Session.user = auth.currentUser //El usuario que ingreso queda guardado en el singleton TODO
-                Session.user = auth.currentUser?.let { getUserFromDB(it.uid) }!!
-                flagLogIn.value = true
+                val ret = auth.currentUser?.let { getUserFromDB(it.uid) }
+                if(ret == null){
+                    failureText = "Unable to get user"
+                    viewState.value = ViewState.FAILURE
+                } else {
+                    Session.user = ret
+                    flagLogIn.value = true
+                }
+//                Session.user = auth.currentUser?.let { getUserFromDB(it.uid) }!!
+//                flagLogIn.value = true
             } else {
                 wrongLogInText.value = ret.message.toString()
+                failureText = ret.message.toString()
+                viewState.value = ViewState.FAILURE
             }
         }
-//        val user = userDao?.loadUserByUsername(username)
-//
-//        if(user == null){
-//            flagUserUnknown.value = true
-//        } else if(password != user.password){
-//            flagUserUnknown.value = true
-//        } else {
-//            Session.user = user //El usuario que ingreso queda guardado en el singleton
-//            flagLogIn.value = true
-//        }
     }
+
     private suspend fun signInUser(email: String, password: String) : Exception? {
         return try{
             auth.signInWithEmailAndPassword(email, password).await()

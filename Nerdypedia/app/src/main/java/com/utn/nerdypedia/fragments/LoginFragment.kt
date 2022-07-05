@@ -12,11 +12,14 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.utn.nerdypedia.R
 import com.utn.nerdypedia.activities.MainActivity
+import com.utn.nerdypedia.entities.ViewState
 import com.utn.nerdypedia.viewmodels.LoginViewModel
 
 class LoginFragment : Fragment() {
@@ -32,6 +35,8 @@ class LoginFragment : Fragment() {
     private lateinit var signInButton : Button
     private lateinit var userEditText : EditText
     private lateinit var passEditText : EditText
+    private lateinit var progressBarLogin: ProgressBar
+    private lateinit var textSignIn: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,6 +44,12 @@ class LoginFragment : Fragment() {
     ): View? {
 
         v = inflater.inflate(R.layout.login_fragment, container, false)
+        loginButton = v.findViewById(R.id.loginButton)
+        signInButton = v.findViewById(R.id.signInButton)
+        userEditText = v.findViewById(R.id.emailEditText)
+        passEditText = v.findViewById(R.id.passEditText)
+        progressBarLogin = v.findViewById(R.id.progressBarLogin)
+        textSignIn = v.findViewById(R.id.textSignIn)
 
         return v
     }
@@ -51,12 +62,6 @@ class LoginFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-
-        loginButton = v.findViewById(R.id.loginButton)
-        signInButton = v.findViewById(R.id.signInButton)
-        userEditText = v.findViewById(R.id.emailEditText)
-        passEditText = v.findViewById(R.id.passEditText)
-
 
         /* Llamadas a viewModel */
         //Limpio todos los flags
@@ -73,13 +78,13 @@ class LoginFragment : Fragment() {
         }
 
         /* Observadores del viewModel */
-        //Los datos del usuario estan vacios
-        viewModel.wrongLogInText.observe(viewLifecycleOwner, Observer { text ->
-            if(text.isNotEmpty()){
-                hideKeyboard()
-                Snackbar.make(v, text, Snackbar.LENGTH_LONG).show()
-            }
-        })
+//        //Los datos del usuario estan vacios
+//        viewModel.wrongLogInText.observe(viewLifecycleOwner, Observer { text ->
+//            if(text.isNotEmpty()){
+//                hideKeyboard()
+//                Snackbar.make(v, text, Snackbar.LENGTH_LONG).show()
+//            }
+//        })
 
         //Login con exito
         viewModel.flagLogIn.observe(viewLifecycleOwner, Observer { result ->
@@ -96,6 +101,45 @@ class LoginFragment : Fragment() {
             if(result){
                 var action = LoginFragmentDirections.actionLoginFragmentToSignInFragment()
                 v.findNavController().navigate(action)
+            }
+        })
+
+        viewModel.viewState.observe(viewLifecycleOwner, Observer { state ->
+            hideKeyboard()
+            when(state){
+                ViewState.RESET -> {
+                    progressBarLogin.visibility = View.INVISIBLE
+                    loginButton.visibility      = View.VISIBLE
+                    signInButton.visibility     = View.VISIBLE
+                    userEditText.visibility     = View.VISIBLE
+                    passEditText.visibility     = View.VISIBLE
+                    textSignIn.visibility       = View.VISIBLE
+                }
+                ViewState.LOADING -> {
+                    progressBarLogin.visibility = View.VISIBLE
+                    loginButton.visibility      = View.INVISIBLE
+                    signInButton.visibility     = View.INVISIBLE
+                    userEditText.visibility     = View.INVISIBLE
+                    passEditText.visibility     = View.INVISIBLE
+                    textSignIn.visibility       = View.INVISIBLE
+                }
+                ViewState.FAILURE -> {
+                    progressBarLogin.visibility = View.INVISIBLE
+                    loginButton.visibility      = View.VISIBLE
+                    signInButton.visibility     = View.VISIBLE
+                    userEditText.visibility     = View.VISIBLE
+                    passEditText.visibility     = View.VISIBLE
+                    textSignIn.visibility       = View.VISIBLE
+                    Snackbar.make(v, viewModel.failureText, Snackbar.LENGTH_LONG).show()
+                }
+                ViewState.SUCCESS -> {
+                    progressBarLogin.visibility = View.INVISIBLE
+                    loginButton.visibility      = View.VISIBLE
+                    signInButton.visibility     = View.VISIBLE
+                    userEditText.visibility     = View.VISIBLE
+                    passEditText.visibility     = View.VISIBLE
+                    textSignIn.visibility       = View.VISIBLE
+                }
             }
         })
     }
