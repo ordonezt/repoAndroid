@@ -77,7 +77,7 @@ dependencies {
     // Kotlin
     implementation "androidx.preference:preference-ktx:$preference_version"
 
-    def activity_version = "1.4.0"
+/*    def activity_version = "1.4.0"
     // Java language implementation
     implementation("androidx.activity:activity:$activity_version")
     // Kotlin
@@ -90,7 +90,7 @@ dependencies {
     // Kotlin
     implementation("androidx.fragment:fragment-ktx:$fragment_version")
     // Testing Fragments in Isolation
-    debugImplementation("androidx.fragment:fragment-testing:$fragment_version")
+    debugImplementation("androidx.fragment:fragment-testing:$fragment_version")*/
 
 
 }

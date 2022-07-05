@@ -1,44 +1,41 @@
-package com.utn.nerdypedia.fragments
+package com.utn.testgallery
 
+import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.utn.nerdypedia.R
-import com.utn.nerdypedia.viewmodels.ProfileViewModel
 
-
-class ProfileFragment : Fragment() {
+class BlankFragment : Fragment() {
 
     companion object {
-        fun newInstance() = ProfileFragment()
+        fun newInstance() = BlankFragment()
     }
 
-    private lateinit var viewModel: ProfileViewModel
+    private lateinit var viewModel: BlankViewModel
     private lateinit var imageView: ImageView
-    private lateinit var btn: ImageButton
+    private lateinit var btn: Button
     private lateinit var v: View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        v = inflater.inflate(R.layout.profile_fragment, container, false)
+        v = inflater.inflate(R.layout.blank_fragment, container, false)
 
-        imageView = v.findViewById(R.id.userPic)
-        btn = v.findViewById(R.id.changePicBtn)
+        imageView = v.findViewById(R.id.imageView)
+        btn = v.findViewById(R.id.button)
 
         return v
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(BlankViewModel::class.java)
         // TODO: Use the ViewModel
     }
 
@@ -62,4 +59,5 @@ class ProfileFragment : Fragment() {
     fun openFileChooser() {
         fileChooserContract.launch("image/*")
     }
+
 }
